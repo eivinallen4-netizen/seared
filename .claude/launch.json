@@ -1,0 +1,42 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "next-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "next-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev",
+        "-p",
+        "3005"
+      ],
+      "env": {
+        "NEXT_DIST_DIR": ".next-preview"
+      },
+      "port": 3005
+    },
+    {
+      "name": "next-preview-2",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev",
+        "-p",
+        "3007"
+      ],
+      "env": {
+        "NEXT_DIST_DIR": ".next-preview-2"
+      },
+      "port": 3007
+    }
+  ]
+}

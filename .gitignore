@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# second local preview server
+/.next-preview/
+/.next-preview-2/

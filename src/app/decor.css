@@ -1,0 +1,1237 @@
+/* =========================================================================
+   Seared Vegas — material layer
+   Real textures, fire, burnt paper and brush marks laid over the structure in
+   globals.css. Loaded after globals.css, so same-specificity rules here win.
+   Assets are built by scripts/build-decor.py (see assets-src/briefs/decor-system.md).
+   ========================================================================= */
+:root {
+  --tex-paper: url("/textures/paper-tile.webp");
+  --tex-paper-mult: url("/textures/paper-tile-mult.webp");
+  --tex-char: url("/textures/char-tile.webp");
+  --tex-grit: url("/textures/grit-tile.webp");
+  --tex-grain: url("/textures/grain.png");
+  --brush-1: url("/decor/brush/underline-1.webp");
+  --brush-2: url("/decor/brush/underline-2.webp");
+  --brush-3: url("/decor/brush/underline-3.webp");
+  --brush-rule: url("/decor/brush/rule.webp");
+  --checker: 11px;
+  --scorch-h: clamp(40px, 4.6vw, 68px);
+  --radius: 14px;
+  /* skeleton shimmer, per surface */
+  --sk-a: rgba(58, 46, 36, 0.55);
+  --sk-b: rgba(110, 88, 66, 0.55);
+}
+@media (max-width: 639px) {
+  :root {
+    --checker: 8px;
+  }
+}
+
+/* ---- Global: char everywhere, one film of grain over the whole page ---- */
+body {
+  background: var(--char) var(--tex-char) 0 0 / 512px;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90; /* above the toast (60), below the skip link (100) */
+  pointer-events: none;
+  background: var(--tex-grain) 0 0 / 192px;
+  opacity: 0.085;
+}
+::selection {
+  background: var(--flame);
+  color: #fff6e6;
+}
+.icon {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.16em;
+}
+.dish__price,
+.cart-line__price,
+.totals dd,
+.summary__rows dd,
+.btn__price,
+.mobile-cart__amount,
+.customize__price,
+.summary-lines__price {
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================================
+   Brush marks (masks: colour always comes from a token)
+   ========================================================================= */
+.brush {
+  display: block;
+  background: currentColor;
+  -webkit-mask: var(--brush-1) center / 100% 100% no-repeat;
+  mask: var(--brush-1) center / 100% 100% no-repeat;
+}
+.brush--2 {
+  -webkit-mask-image: var(--brush-2);
+  mask-image: var(--brush-2);
+}
+.brush--3 {
+  -webkit-mask-image: var(--brush-3);
+  mask-image: var(--brush-3);
+}
+@keyframes brush-on {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* =========================================================================
+   Checker band — one size token for every strip on the site
+   ========================================================================= */
+.checker-strip {
+  height: calc(var(--checker) * 2);
+  background-size: calc(var(--checker) * 2) calc(var(--checker) * 2);
+  border-block: 2px solid #0b0806;
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.65);
+}
+.checker-strip--bottom {
+  box-shadow: 0 -8px 16px -8px rgba(60, 25, 0, 0.45);
+}
+
+/* =========================================================================
+   Burnt paper edge — every char/paper seam
+   The strip is opaque char at the top, a glowing torn rim, then toasted paper
+   that fades to transparent so the section's own paper shows through.
+   ========================================================================= */
+.scorched {
+  position: relative;
+  z-index: 2;
+  height: var(--scorch-h);
+  margin-top: calc(var(--scorch-h) * -0.14);
+  margin-bottom: calc(var(--scorch-h) * -0.28);
+  background: url("/decor/scorch-edge.webp") 50% 0 / auto 100% repeat-x;
+  overflow: visible;
+  pointer-events: none;
+}
+.scorched--flip {
+  transform: scaleY(-1);
+  margin-top: calc(var(--scorch-h) * -0.28);
+  margin-bottom: calc(var(--scorch-h) * -0.14);
+}
+@media (max-width: 899px) {
+  .scorched {
+    background-image: url("/decor/scorch-edge-m.webp");
+  }
+}
+/* Burnt corners where the paper meets the edge of the screen */
+.menu::after,
+.truck::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--checker) * 2 + 4px);
+  left: 0;
+  width: clamp(160px, 24vw, 400px);
+  aspect-ratio: 9 / 7;
+  background: url("/decor/scorch-corner.webp") left top / contain no-repeat;
+  pointer-events: none;
+  z-index: 2;
+}
+.truck::after {
+  left: auto;
+  right: 0;
+  transform: scaleX(-1);
+}
+@media (max-width: 519px) {
+  .menu::after,
+  .truck::after {
+    display: none;
+  }
+}
+
+/* =========================================================================
+   Fire + sparks — bottom corners of every dark band
+   ========================================================================= */
+.fire-band {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.fire-band__sparks {
+  position: absolute;
+  inset: 0;
+  background: url("/decor/spark-field.webp") center bottom / cover no-repeat;
+  opacity: 0.7;
+}
+.fire {
+  position: absolute;
+  bottom: -2%;
+  width: clamp(280px, 40vw, 680px);
+  aspect-ratio: 3 / 2;
+  background: url("/decor/fire-corner.webp") left bottom / contain no-repeat;
+  transform-origin: 50% 100%;
+  animation: fire-breathe 3.2s ease-in-out infinite alternate;
+}
+.fire--l {
+  left: -1%;
+}
+.fire--r {
+  right: -1%;
+  scale: -1 1;
+  animation-delay: -1.4s;
+}
+@keyframes fire-breathe {
+  from {
+    opacity: 0.8;
+    transform: scaleY(1);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1.045) skewX(-0.6deg);
+  }
+}
+.fire-band--soft .fire {
+  width: clamp(220px, 30vw, 520px);
+  animation: none;
+  opacity: 0.55;
+}
+.fire-band--soft .fire-band__sparks {
+  opacity: 0.45;
+}
+@media (max-width: 639px) {
+  .fire {
+    width: 64vw;
+    background-image: url("/decor/fire-corner-m.webp");
+  }
+  .fire-band__sparks {
+    display: none;
+  }
+}
+
+/* Rising sparks: frames from the sprite sheet instead of round dots */
+.embers span {
+  border-radius: 0;
+  box-shadow: none;
+  background: url("/decor/spark-sprite.webp") calc(var(--frame, 0) * var(--size) * -1) 0 / calc(var(--frames, 8) * var(--size)) var(--size) no-repeat;
+}
+@media (max-width: 639px) {
+  .embers span:nth-child(even) {
+    display: none;
+  }
+}
+html.has-modal .embers span,
+html.has-modal .fire,
+html.has-modal .hero__flames {
+  animation-play-state: paused;
+}
+
+/* =========================================================================
+   Header
+   ========================================================================= */
+.site-header.is-scrolled {
+  background: linear-gradient(rgba(18, 14, 11, 0.8), rgba(18, 14, 11, 0.8)), var(--tex-char) 0 0 / 512px;
+}
+.site-header.is-scrolled::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 6px;
+  --c1: #15100c;
+  --c2: #efe1c3;
+  background-image: conic-gradient(var(--c1) 25%, var(--c2) 0 50%, var(--c1) 0 75%, var(--c2) 0);
+  background-size: 6px 6px;
+  box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.7);
+}
+.site-header__logo img {
+  box-shadow:
+    0 0 0 3px #0b0806,
+    0 0 26px 4px rgba(255, 90, 20, 0.28);
+}
+.cart-btn__count:empty {
+  display: none;
+}
+.site-nav__order .btn {
+  font-style: normal;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
+}
+@media (min-width: 900px) {
+  .site-nav li:first-child::before {
+    content: "";
+    display: inline-block;
+    width: 2px;
+    height: 26px;
+    background: rgba(246, 234, 208, 0.55);
+    vertical-align: middle;
+  }
+  .site-nav__order {
+    margin-left: 0;
+  }
+  .site-nav__order .btn {
+    margin-left: 1.15rem;
+  }
+  /* brush stroke swipes in under the link */
+  .site-nav a:not(.btn)::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1px;
+    height: 7px;
+    background: var(--flame-hot);
+    -webkit-mask: var(--brush-3) center / 100% 100% no-repeat;
+    mask: var(--brush-3) center / 100% 100% no-repeat;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.3s cubic-bezier(0.3, 0.7, 0.2, 1);
+  }
+  .site-nav a:not(.btn):hover::after,
+  .site-nav a:not(.btn):focus-visible::after {
+    clip-path: inset(0 0 0 0);
+  }
+  .site-nav a:not(.btn):hover {
+    color: var(--cream);
+  }
+}
+@media (min-width: 1200px) {
+  .site-header__logo {
+    width: 128px;
+    height: 128px;
+    margin-top: 40px;
+  }
+}
+@media (max-width: 899px) {
+  .site-header {
+    background: linear-gradient(rgba(18, 14, 11, 0.82), rgba(18, 14, 11, 0.82)), var(--tex-char) 0 0 / 512px;
+  }
+  .site-nav {
+    background: linear-gradient(rgba(27, 21, 17, 0.7), rgba(27, 21, 17, 0.7)), var(--tex-char) 0 0 / 512px;
+  }
+}
+
+/* =========================================================================
+   Hero
+   ========================================================================= */
+.hero {
+  background:
+    radial-gradient(60% 55% at 72% 55%, rgba(255, 110, 30, 0.2), transparent 70%),
+    radial-gradient(120% 90% at 50% 0%, rgba(40, 29, 22, 0.85) 0%, rgba(18, 14, 11, 0) 60%),
+    var(--tex-char) 0 0 / 512px,
+    var(--char);
+}
+.hero::after {
+  /* darken the sides and top only, so the checker band below stays crisp */
+  box-shadow: none;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.5), transparent 15%, transparent 85%, rgba(0, 0, 0, 0.5)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.5), transparent 24%);
+}
+.hero .eyebrow {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.hero__title {
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  text-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.55);
+}
+.hero__title > span {
+  position: relative;
+  width: fit-content;
+}
+.hero__title em {
+  text-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.55);
+}
+.hero__title .hero__brush {
+  width: 104%;
+  aspect-ratio: 11 / 1;
+  margin: -0.02em 0 0.2em -2%;
+  background: linear-gradient(90deg, var(--flame-hot), var(--flame) 70%, var(--flame-deep));
+  animation: brush-on 0.7s 0.25s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+.hero__lede {
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  color: rgba(246, 234, 208, 0.78);
+}
+.link-arrow::after {
+  content: none;
+}
+.link-arrow .icon {
+  color: var(--gold);
+}
+.hero__flames {
+  position: absolute;
+  left: -10%;
+  right: -14vw;
+  bottom: 18%;
+  height: 60%;
+  z-index: 0;
+  pointer-events: none;
+  background: url("/decor/hero-flames.webp") center bottom / 100% 100% no-repeat;
+  opacity: 0.92;
+  -webkit-mask-image: linear-gradient(0deg, #000 62%, transparent);
+  mask-image: linear-gradient(0deg, #000 62%, transparent);
+  transform-origin: 50% 100%;
+  animation: fire-breathe 3.6s ease-in-out infinite alternate;
+}
+/* The checker counter is a real object now, shot from the same camera as the tray */
+.counter {
+  left: 0;
+  right: auto;
+  bottom: 0;
+  width: 132%;
+  height: auto;
+  perspective: none;
+  z-index: 1;
+  filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.7));
+}
+.counter img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hero__glow {
+  z-index: 1;
+}
+.hero__tray {
+  rotate: 0deg;
+  width: min(92%, 680px);
+  margin-right: 0;
+  margin-bottom: 17%;
+}
+.hero__tray .food-img {
+  filter: drop-shadow(-10px -4px 22px rgba(255, 100, 30, 0.2)) drop-shadow(0 26px 22px rgba(0, 0, 0, 0.6)) drop-shadow(0 6px 5px rgba(0, 0, 0, 0.55));
+}
+.tray-shadow--hero {
+  left: 9%;
+  right: 9%;
+  bottom: 1%;
+  height: 10%;
+}
+@media (max-width: 899px) {
+  .hero__flames {
+    left: -6%;
+    right: -6%;
+    bottom: 14%;
+    height: 54%;
+    opacity: 0.8;
+    background-image: url("/decor/hero-flames-m.webp");
+  }
+  .counter {
+    left: 3%;
+    right: auto;
+    width: 118%;
+    height: auto;
+  }
+  .hero__tray {
+    width: min(88%, 540px);
+    margin: 0 auto 15%;
+  }
+}
+
+/* =========================================================================
+   Paper sections (menu, find the truck)
+   ========================================================================= */
+.menu,
+.truck {
+  background:
+    radial-gradient(160% 120% at 50% 50%, transparent 50%, rgba(150, 95, 30, 0.16) 85%, rgba(110, 60, 15, 0.3) 100%),
+    var(--tex-paper) 0 0 / 512px,
+    var(--paper);
+}
+.menu::before,
+.truck::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url("/textures/paper-stain.webp") center / 100% 100% no-repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+.menu > .container,
+.truck > .container {
+  position: relative;
+  z-index: 3;
+}
+.menu > .container {
+  padding-top: 2.25rem;
+}
+.truck__grid {
+  padding-top: 3.25rem;
+  padding-bottom: 4rem;
+}
+
+/* Heading: upright, with tapered flare marks */
+.menu .section-title {
+  font-style: normal;
+  letter-spacing: 0;
+}
+.slash-marks {
+  width: 0.78em;
+  height: 0.65em;
+}
+
+/* Filter pills: straight under the heading, like the mockup */
+.filters-sentinel {
+  height: 1px;
+  margin-bottom: -1px;
+}
+.filters {
+  /* full-bleed, so the pinned bar is a band across the page and never a box */
+  margin-inline: calc(50% - 50vw);
+  padding: 0.6rem calc(50vw - 50%) 0.75rem;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+  background: none;
+  border-bottom: 2px solid transparent;
+}
+.filters.is-stuck {
+  background: var(--tex-paper) 0 0 / 512px, var(--paper);
+  border-bottom-color: var(--ink);
+  box-shadow: 0 10px 18px -10px rgba(60, 25, 0, 0.55);
+}
+.chip {
+  min-height: 42px;
+  min-width: 8rem;
+  justify-content: center;
+  padding: 0 1.1rem;
+  font-size: 1.15rem;
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+.chip:hover {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--cream);
+  background-blend-mode: multiply;
+  box-shadow: 0 3px 0 var(--ink);
+  transform: translateY(-1px);
+}
+.chip[aria-pressed="true"],
+.chip[aria-pressed="true"]:hover {
+  background: var(--tex-grit) 0 0 / 256px, var(--burnt);
+  background-blend-mode: multiply;
+  box-shadow: 0 3px 0 var(--burnt-deep);
+  transform: none;
+}
+@media (max-width: 639px) {
+  .chip {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 0.95rem;
+    font-size: 1.08rem;
+  }
+  .filters {
+    gap: 0.45rem;
+    justify-content: center;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+  }
+}
+
+/* Category cards: thinner outline, softer shadow, trays breaking further out */
+.cat-cards {
+  margin-bottom: 3.5rem;
+}
+.cat-card {
+  margin-top: clamp(128px, 15vw, 190px);
+  border-width: 2px;
+  box-shadow:
+    0 3px 0 rgba(24, 17, 12, 0.85),
+    0 26px 38px -22px rgba(70, 30, 5, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -46px 60px -34px rgba(70, 25, 0, 0.26);
+}
+.cat-card--gold {
+  background:
+    var(--tex-grit) 0 0 / 256px,
+    linear-gradient(180deg, #f6c445, var(--gold) 55%, #e2a21d);
+  background-blend-mode: multiply;
+}
+.cat-card--cream {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+}
+.cat-card--red {
+  background:
+    var(--tex-grit) 0 0 / 256px,
+    linear-gradient(180deg, #b8281a, var(--burnt) 55%, #861a0e);
+  background-blend-mode: multiply;
+}
+.cat-card__tray {
+  margin: calc(clamp(128px, 15vw, 190px) * -1) -11% 0;
+}
+.cat-card__title {
+  padding-bottom: 0.3em;
+}
+.cat-card__title::after {
+  left: 2%;
+  right: 2%;
+  bottom: 0;
+  height: 0.26em;
+  border-radius: 0;
+  transform: none;
+  -webkit-mask: var(--brush-2) center / 100% 100% no-repeat;
+  mask: var(--brush-2) center / 100% 100% no-repeat;
+}
+.cat-card:nth-child(2) .cat-card__title::after {
+  -webkit-mask-image: var(--brush-1);
+  mask-image: var(--brush-1);
+}
+.cat-card:nth-child(3) .cat-card__title::after {
+  -webkit-mask-image: var(--brush-3);
+  mask-image: var(--brush-3);
+}
+@media (max-width: 899px) {
+  .cat-card {
+    margin-top: 130px;
+  }
+  .cat-card__tray {
+    margin: -130px -2% 0;
+  }
+}
+
+/* Dish cards + group headings */
+.menu-group__head {
+  position: relative;
+  border-bottom: 0;
+  padding-bottom: 0.75rem;
+}
+.menu-group__head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9px;
+  background: var(--ink);
+  -webkit-mask: var(--brush-rule) left center / 100% 100% no-repeat;
+  mask: var(--brush-rule) left center / 100% 100% no-repeat;
+}
+.dish {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+  box-shadow:
+    0 3px 0 var(--ink),
+    0 22px 34px -22px rgba(70, 30, 5, 0.65);
+}
+.dish__badge {
+  rotate: -2deg;
+}
+
+/* =========================================================================
+   Buttons
+   ========================================================================= */
+.btn {
+  border-radius: 8px;
+}
+.btn--flame {
+  background:
+    var(--tex-grit) 0 0 / 256px,
+    linear-gradient(180deg, #e8501f 0%, var(--flame) 55%, #c1320f 100%);
+  background-blend-mode: multiply;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 3px 0 var(--btn-depth),
+    0 10px 24px -6px rgba(214, 59, 23, 0.55);
+}
+.btn--flame:hover {
+  filter: none;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 4px 0 var(--btn-depth),
+    0 0 0 3px rgba(255, 122, 26, 0.26),
+    0 14px 28px -6px rgba(214, 59, 23, 0.65);
+}
+.btn--flame:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 0 var(--btn-depth),
+    0 6px 14px -6px rgba(214, 59, 23, 0.55);
+}
+.btn .icon {
+  transition: transform 0.2s ease;
+}
+.btn:hover .icon--arrow-right {
+  transform: translateX(3px);
+}
+.btn:hover .icon--plus {
+  transform: rotate(90deg);
+}
+.btn--outline,
+.btn--sm {
+  font-style: normal;
+  letter-spacing: 0.03em;
+}
+.btn--outline {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+  border-radius: 6px;
+}
+.btn--outline:hover {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--cream);
+  background-blend-mode: multiply;
+  box-shadow: 0 4px 0 var(--ink);
+  transform: translateY(-1px);
+}
+.btn:disabled {
+  filter: none;
+  opacity: 1;
+}
+.btn--flame:disabled {
+  background: #cdb992;
+  color: rgba(24, 17, 12, 0.55);
+  border-color: rgba(24, 17, 12, 0.25);
+  box-shadow: none;
+}
+/* Flare marks: the same tapered rays as the section heading */
+.btn--flare::before,
+.btn--flare::after {
+  width: 44px;
+  height: 36px;
+  background: var(--flame-hot);
+  -webkit-mask: url("/decor/flare-burst.svg") center / contain no-repeat;
+  mask: url("/decor/flare-burst.svg") center / contain no-repeat;
+  transition: transform 0.2s ease;
+}
+.btn--flare::before {
+  right: calc(100% + 12px);
+  transform: scaleX(-1);
+}
+.btn--flare::after {
+  left: calc(100% + 12px);
+  transform: none;
+}
+.btn--flare:hover::before {
+  transform: scaleX(-1) translateX(4px);
+}
+.btn--flare:hover::after {
+  transform: translateX(4px);
+}
+@media (max-width: 480px) {
+  .btn--flare::before,
+  .btn--flare::after {
+    display: block;
+    width: 26px;
+    height: 22px;
+  }
+  .btn--flare::before {
+    right: calc(100% + 6px);
+  }
+  .btn--flare::after {
+    left: calc(100% + 6px);
+  }
+}
+.mobile-cart__btn {
+  background:
+    var(--tex-grit) 0 0 / 256px,
+    linear-gradient(180deg, #e8501f, var(--flame) 55%, #c1320f);
+  background-blend-mode: multiply;
+}
+
+/* =========================================================================
+   Surf & turf builder
+   ========================================================================= */
+.builder {
+  background:
+    radial-gradient(50% 40% at 50% 0%, rgba(214, 59, 23, 0.26), transparent 70%),
+    var(--tex-char) 0 0 / 512px,
+    var(--char);
+}
+.step {
+  background:
+    linear-gradient(180deg, rgba(44, 34, 27, 0.78), rgba(30, 23, 18, 0.86)),
+    var(--tex-char) 0 0 / 384px;
+}
+.step__n {
+  width: 38px;
+  height: 38px;
+  border-radius: 0;
+  background: var(--tex-grit) 0 0 / 256px, var(--gold);
+  background-blend-mode: multiply;
+  -webkit-mask: url("/decor/badge-burst.svg") center / contain no-repeat;
+  mask: url("/decor/badge-burst.svg") center / contain no-repeat;
+}
+.tile.is-checked::after {
+  content: "";
+  top: 5px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+  background: var(--gold);
+  -webkit-mask: url("/decor/check-brush.svg") center / contain no-repeat;
+  mask: url("/decor/check-brush.svg") center / contain no-repeat;
+  animation: check-pop 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+@keyframes check-pop {
+  from {
+    transform: scale(0.4) rotate(-12deg);
+    opacity: 0;
+  }
+}
+.tile__kind--surf {
+  background: rgba(246, 234, 208, 0.1);
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px rgba(246, 234, 208, 0.38);
+}
+/* The order summary is a torn kitchen ticket */
+.summary-wrap {
+  filter: drop-shadow(0 5px 0 #000) drop-shadow(0 22px 22px rgba(0, 0, 0, 0.55));
+}
+.summary {
+  --zz: 16px;
+  border: 0;
+  border-radius: 6px 6px 0 0;
+  box-shadow: none;
+  padding-bottom: 2rem;
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+  color-scheme: light;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--zz) 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--zz) 100%;
+}
+.summary::before {
+  height: calc(var(--checker) * 1);
+  background-size: var(--checker) var(--checker);
+}
+
+/* =========================================================================
+   Find the truck
+   ========================================================================= */
+.truck__facts > div {
+  grid-template-columns: 128px minmax(0, 1fr);
+}
+.truck__facts dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.truck__facts dt .icon {
+  color: var(--flame);
+}
+.map-card__go .icon {
+  vertical-align: -0.12em;
+}
+.map-card {
+  border-radius: 16px;
+}
+.map-card__map::after {
+  /* paper + grain over the drawn map so it belongs to the page */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tex-paper-mult) 0 0 / 512px;
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+  pointer-events: none;
+}
+@media (max-width: 899px) {
+  .truck__facts > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================================
+   Footer
+   ========================================================================= */
+.site-footer {
+  background:
+    radial-gradient(50% 60% at 50% 120%, rgba(214, 59, 23, 0.3), transparent 70%),
+    var(--tex-char) 0 0 / 512px,
+    var(--char);
+}
+.site-footer__h::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 8px;
+  margin-top: 0.2rem;
+  background: var(--flame);
+  -webkit-mask: var(--brush-3) left center / 100% 100% no-repeat;
+  mask: var(--brush-3) left center / 100% 100% no-repeat;
+}
+.site-footer a,
+.site-footer address {
+  min-height: 44px;
+}
+.site-footer address {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+}
+.site-footer a {
+  gap: 0.45rem;
+}
+.site-footer .icon {
+  color: var(--flame-hot);
+}
+.site-footer__signoff {
+  position: relative;
+  z-index: 1;
+  margin: 0.5rem 0 1.75rem;
+  padding-inline: var(--gutter);
+  text-align: center;
+  font-family: var(--display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: clamp(2.6rem, 8.4vw, 6.75rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: rgba(246, 234, 208, 0.07);
+  -webkit-text-stroke: 1px rgba(246, 234, 208, 0.26);
+}
+.site-footer__signoff em {
+  font-style: italic;
+  color: rgba(242, 90, 31, 0.42);
+  -webkit-text-stroke: 0;
+}
+
+/* =========================================================================
+   Dialogs, drawer, toast (top layer: they carry their own paper + grain)
+   ========================================================================= */
+.drawer {
+  position: relative;
+  background: var(--tex-paper) 0 0 / 512px, var(--paper);
+  color-scheme: light;
+}
+.customize {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+  color-scheme: light;
+}
+.customize__foot,
+.drawer__foot {
+  background: var(--tex-paper-mult) 0 0 / 512px, var(--paper-card);
+  background-blend-mode: multiply;
+}
+.drawer__head,
+.customize__hero {
+  background-image: var(--tex-char);
+  background-size: 512px;
+}
+.customize__hero {
+  background:
+    radial-gradient(60% 80% at 50% 100%, rgba(255, 120, 40, 0.28), transparent 70%),
+    var(--tex-char) 0 0 / 512px,
+    var(--char);
+}
+.drawer::after,
+.customize::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: inherit;
+  background: var(--tex-grain) 0 0 / 192px;
+  opacity: 0.07;
+}
+.drawer__count {
+  background: var(--tex-grit) 0 0 / 256px, var(--gold);
+  background-blend-mode: multiply;
+}
+.cart-empty__tray {
+  width: 190px;
+  opacity: 1;
+  rotate: -4deg;
+  filter: drop-shadow(0 12px 10px rgba(60, 25, 0, 0.3));
+}
+.dialog::backdrop {
+  background:
+    radial-gradient(60% 40% at 50% 105%, rgba(214, 59, 23, 0.28), transparent 70%),
+    rgba(10, 7, 5, 0.72);
+}
+.toast {
+  background: linear-gradient(rgba(27, 21, 17, 0.7), rgba(27, 21, 17, 0.7)), var(--tex-char) 0 0 / 512px;
+}
+.toast__icon {
+  background: var(--tex-grit) 0 0 / 256px, var(--gold);
+  background-blend-mode: multiply;
+}
+.stepper button {
+  display: grid;
+  place-items: center;
+}
+
+/* Loading shimmer that reads on both char and paper */
+.food-img.is-loading::before {
+  background: linear-gradient(100deg, var(--sk-a) 30%, var(--sk-b) 50%, var(--sk-a) 70%);
+  background-size: 300% 100%;
+}
+.menu,
+.truck,
+.drawer,
+.customize,
+.summary {
+  --sk-a: rgba(226, 207, 166, 0.7);
+  --sk-b: rgba(245, 233, 208, 0.9);
+}
+
+/* =========================================================================
+   404
+   ========================================================================= */
+.notfound {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 3rem var(--gutter) 5rem;
+  text-align: center;
+  background:
+    radial-gradient(55% 45% at 50% 100%, rgba(214, 59, 23, 0.3), transparent 70%),
+    var(--tex-char) 0 0 / 512px,
+    var(--char);
+}
+.notfound__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 640px;
+}
+.notfound__logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+}
+.notfound__tray {
+  width: min(78vw, 360px);
+  rotate: -3deg;
+  filter: drop-shadow(0 0 46px rgba(255, 110, 30, 0.3)) drop-shadow(0 26px 22px rgba(0, 0, 0, 0.6));
+}
+.notfound__title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: clamp(2.8rem, 9vw, 5.5rem);
+  line-height: 0.88;
+  color: var(--cream);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+}
+.notfound__title em {
+  font-style: italic;
+  color: #ff5a1c;
+}
+.notfound__text {
+  color: rgba(246, 234, 208, 0.8);
+  max-width: 34ch;
+}
+
+/* =========================================================================
+   Reduced motion: a designed still, not frozen dots
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .embers span {
+    display: none;
+  }
+  .fire,
+  .hero__flames {
+    animation: none !important;
+    opacity: 0.95;
+  }
+  .hero__title .hero__brush {
+    animation: none !important;
+    clip-path: none;
+  }
+}
+
+
+/* =========================================================================
+   Review pass — fixes confirmed against the mockup
+   ========================================================================= */
+
+/* Hero: flames fade on every side so they never read as a cropped photo */
+.hero {
+  overflow: clip;
+}
+.hero__flames {
+  -webkit-mask-image: linear-gradient(0deg, transparent 2%, #000 22%, #000 62%, transparent), linear-gradient(90deg, transparent 1%, #000 12%, #000 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(0deg, transparent 2%, #000 22%, #000 62%, transparent), linear-gradient(90deg, transparent 1%, #000 12%, #000 100%);
+  mask-composite: intersect;
+}
+/* Sparks stay low and small; the big out-of-focus ones in the upper half are masked away */
+.fire-band__sparks {
+  -webkit-mask-image: linear-gradient(0deg, #000 50%, transparent 86%);
+  mask-image: linear-gradient(0deg, #000 50%, transparent 86%);
+}
+/* A checker band closes the hero, as in the mockup */
+.hero__strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+}
+.hero .fire-band {
+  bottom: calc(var(--checker) * 2);
+}
+/* Seat the tray on the counter's top face instead of over its front lip */
+.counter {
+  bottom: -10%;
+}
+.tray-shadow--hero {
+  left: 12%;
+  right: 12%;
+  bottom: -1%;
+  height: 8%;
+}
+.hero__title .hero__brush {
+  width: 80%;
+  aspect-ratio: 19 / 1;
+  margin: 0.03em 0 0.22em 5%;
+}
+@media (min-width: 900px) {
+  /* the headline climbs to the right like sign painting */
+  .hero__title {
+    rotate: -3deg;
+    transform-origin: left bottom;
+    margin-bottom: 0.35em;
+  }
+  .hero .fire--r {
+    display: none;
+  }
+}
+@media (min-width: 1200px) {
+  .site-header__logo {
+    width: 140px;
+    height: 140px;
+    margin-top: 12px;
+  }
+  .site-header.is-scrolled .site-header__logo {
+    width: 64px;
+    height: 64px;
+    margin-top: 6px;
+  }
+  .hero__copy {
+    padding-top: 5.5rem;
+  }
+}
+@media (max-width: 899px) {
+  .counter {
+    bottom: -7%;
+  }
+}
+
+/* Burnt corners: keep the side burn, hide the corner art's own top rim so there is one torn edge */
+.menu::after,
+.truck::after {
+  top: calc(var(--checker) * 2);
+  -webkit-mask-image: linear-gradient(180deg, transparent calc(var(--scorch-h) * 0.5), #000 calc(var(--scorch-h) * 1.05)), linear-gradient(90deg, #000 55%, transparent 96%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(180deg, transparent calc(var(--scorch-h) * 0.5), #000 calc(var(--scorch-h) * 1.05)), linear-gradient(90deg, #000 55%, transparent 96%);
+  mask-composite: intersect;
+}
+.menu > .container {
+  padding-top: 1.75rem;
+}
+
+/* Category cards: trays share a baseline, titles carry the card */
+.cat-card__tray {
+  display: flex;
+  align-items: flex-end;
+  aspect-ratio: 1 / 1.02;
+  margin-bottom: 0.75rem;
+}
+.cat-card__tray .food-img {
+  width: 100%;
+}
+.cat-card__title {
+  font-size: clamp(2rem, 3.8vw, 3.3rem);
+}
+.cat-card .btn--outline {
+  width: min(100%, 264px);
+  justify-content: space-between;
+  padding-inline: 1.3rem;
+}
+
+/* Dish grid: three across on desktop so rows fill (3+2, 3+3) and bodies line up */
+@media (min-width: 1100px) {
+  .dish-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 640px) {
+  .dish__tray {
+    display: flex;
+    align-items: flex-end;
+    aspect-ratio: 1 / 1.04;
+  }
+  .dish__tray .food-img {
+    width: 100%;
+  }
+}
+.dish__body {
+  min-width: 0;
+}
+@media (max-width: 519px) {
+  /* long labels ("Customize Your Plate") stay inside the card */
+  .dish__foot .btn {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 0.6rem;
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+}
+
+/* Builder: the tray preview is sticky again (overflow:hidden on the section had disabled it) */
+.builder {
+  overflow: clip;
+}
+.section-title > span,
+.site-footer__signoff > span,
+.site-footer__signoff > em {
+  display: inline-block;
+  white-space: nowrap;
+}
+.step {
+  border: 2px solid rgba(246, 234, 208, 0.2);
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.75);
+}
+.tile__kind {
+  font-size: 0.72rem;
+}
+
+/* Find the truck */
+.truck__facts dd a,
+.truck__alt a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.map-card__map text {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  fill: var(--ink);
+  opacity: 0.72;
+}
+
+/* Footer sign-off: both halves readable */
+.site-footer__signoff {
+  color: rgba(246, 234, 208, 0.14);
+  -webkit-text-stroke: 1px rgba(246, 234, 208, 0.42);
+}

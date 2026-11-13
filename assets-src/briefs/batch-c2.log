@@ -1,0 +1,860 @@
+Reading additional input from stdin...
+OpenAI Codex v0.166.0
+--------
+workdir: C:\Users\Theo\Desktop\Projects\sered
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1d1af-e115-7021-bfbd-e1952fa0cea8
+--------
+user
+Follow the brief below exactly. Working directory is the Seared Vegas website repo.
+
+<stdin>
+# Batch C2 — flames, sparks, the hero counter, the empty tray
+
+Read `assets-src/briefs/decor-style-guide.md` and look at the mockup image `websiite refrences/landinpagestryle direcctiion.png` before generating anything. Follow the output rules in the style guide exactly. Manifest: `assets-src/decor/manifest-c2.json`.
+
+Generate these assets. Items 1–4 are saved untouched to `assets-src/decor/originals/<id>.png`. Items 5–6 additionally need a background-removed final (see each item).
+
+1. `hero-flames` (landscape) — Realistic open fire flames isolated on pure solid black (#000000), crisp fast shutter. Orange, amber and yellow flames with deep red tips (#a3270c) and a hot pale core (#ffe2a0) near the base, a few small flying sparks. The flames rise from one straight horizontal line along the very bottom edge of the frame and span the full width. Left to right: a tall, dense cluster of licking flames in the left third (reaching about 70% of the frame height); a low, short band of small flames across the middle (about 20% of the height); a medium cluster in the right third (about 50% of the height). Every flame tip ends inside the frame against black. No logs, no grill, no wood, no smoke, no ground, no reflections.
+
+2. `fire-corner` (landscape) — Fire rising from the bottom-left corner only, on pure solid black (#000000). Deep red-orange flame tongues (#a3270c, #d63b17, #ff7a1a, hot core #ffe2a0 at the base), a soft orange heat haze hugging the bottom-left edge, and dozens of small streaky sparks drifting up and to the right with slight motion blur. The fire mass stays within the bottom-left 45% of the width and 55% of the height. Everything beyond the middle of the frame, and the whole top-right half, is perfectly black. No smoke columns, no objects, no ground.
+
+3. `spark-sprite` (landscape) — A reference sheet of EIGHT separate fire sparks on pure solid black (#000000), arranged in two rows of four, each one isolated with wide black space around it (they are cut apart later, so they must not touch or overlap, and nothing may sit between them). The eight sparks: (1) a tiny white-hot round spark; (2) a soft round orange ember with a halo; (3) a thin vertical spark streak, bright head at the top, fading tail below; (4) a longer thin streak, slightly tilted; (5) an irregular flake of glowing ash with a darker edge; (6) two sparks close together; (7) a dim cooling deep-red ember; (8) a small forked crackling spark. Colour ramp: #ffe2a0 core, then #ff7a1a, then #a3270c falloff. Each spark is small, about 8% of the image width. No grid lines, no labels, no numbers.
+
+4. `spark-field` (landscape) — Floating fire sparks and glowing embers on pure solid black (#000000). Hundreds of tiny orange, amber and yellow-white sparks: sharp pinpoints, short curved motion-blurred streaks drifting upward and slightly sideways, and 3–4 larger soft out-of-focus bokeh embers. Density is highest along the far left and far right edges and in the bottom corners. The central 50% of the frame is almost empty black. No flames, no smoke.
+
+5. `hero-counter` (landscape) — FIRST open `assets-src/food/hero-tray.png`: that food tray will sit on top of this counter, so the camera must match it (front-on, raised roughly 25–30°, symmetrical). Product photograph of a long, low rectangular display block covered in a black-and-cream checkerboard vinyl tablecloth (squares about 9 cm, cream #efe1c3 and near-black #15100c) pulled tight over it. The camera faces the long front face squarely and is raised about 25–30° looking down onto the top surface; symmetrical perspective, vanishing point centred. Do NOT use a three-quarter or diagonal view. The top face takes about 40% of the image height and the front vertical face about 30%. Both faces are checkered, with a crisp, slightly rounded edge between them. The block's LEFT end is a clean square corner with clear background to the left of it. The block continues past the RIGHT edge of the frame (cropped on the right on purpose). The cloth is subtly real: faint creases, a slight grease sheen, a little soot speckle near the front edge, cream squares warm and aged, not pure white. Warm orange rim light from below-left and behind, as if from a fire. The top surface glows softly where a food container will sit, centre-right, and the front face is darker. Isolated on flat plain #d9d9d9. Nothing on the block: no food, no props.
+   - Save the generation to `assets-src/decor/originals/hero-counter.png`.
+   - Then remove the grey background (e.g. `pip install "rembg[cpu]"` with the `isnet-general-use` model, or another reliable method) and save the RGBA result to `assets-src/decor/hero-counter.png`. Verify with Pillow: mode RGBA, top-left corner transparent, the block still touching the right canvas edge, checker squares not eaten by the cut-out (cream squares must stay opaque).
+
+6. `tray-empty` (square) — Follow `assets-src/briefs/style-guide.md` (the FOOD style guide) for this one. Open `assets-src/food/base-penne.png` and use it as the composition reference: the identical open matte-black hinged clamshell, identical three-quarter camera, scale and canvas position on a 1024×1024 canvas. Keep the black-and-cream checkerboard paper liner tucked in, with its checker edges peeking over the rim and slightly crumpled, but the container is completely EMPTY: no food, no sauce, no crumbs. Lid open and standing behind.
+   - Save the generation to `assets-src/food/originals/tray-empty.png` and the background-removed transparent RGBA PNG to `assets-src/food/tray-empty.png`, verified the same way as the food batches (RGBA, corners transparent, nothing clipped).
+
+Write `assets-src/decor/manifest-c2.json`. When finished, print a short summary listing every file and any asset you could not get right.
+</stdin>
+codex
+I’ll read both style guides and inspect the reference images first, then generate the assets, make the two transparent cutouts, and verify the files and manifest. I’m using the imagegen skill for this batch.
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'assets-src/briefs/decor-style-guide.md'; Get-Content -LiteralPath 'assets-src/briefs/style-guide.md'; Get-Content -LiteralPath 'C:/Users/Theo/.codex/skills/.system/imagegen/SKILL.md'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 8452ms:
+# Seared Vegas â€” decor & texture style guide (shared by every decor batch)
+
+Reference mockup: `websiite refrences/landinpagestryle direcctiion.png`. Look at it first: the scorched dark background, the flames and sparks at the edges, the checkered counter block under the hero tray, the torn burnt paper edge glowing orange, the aged cream paper, the dry-brush underlines. Those materials are what this batch produces. The food trays already exist; do NOT generate food.
+
+## Art direction (applies to every asset)
+World: a Las Vegas Cajun food truck at night. Two materials only: (1) CHAR â€” soot-black griddle steel / charred butcher paper; (2) PAPER â€” aged cream butcher paper. Fire is the only light source in the world.
+
+Palette (use only these): char #120e0b, char-2 #1b1511, char-3 #261e18, cream #f6ead0, paper #f3e3c2, paper-2 #ead4a8, ink #18110c, flame-deep #a3270c, flame #d63b17, flame-hot #f25a1f, ember #ff7a1a, gold #f2b632, hot core #ffe2a0. No blues, greens, purples or cool greys.
+
+Lighting by asset type:
+- TEXTURE TILES: perfectly flat top-down scan, even light edge to edge, no vignette, no directional light, no single dominant feature, LOW contrast.
+- FIRE / SPARKS: isolated on PURE #000000 black, nothing else in frame, photographic, crisp fast shutter. The black must be true black right to the canvas edges (it is converted to transparency later).
+- OBJECTS: product photography, warm rim light from below-left as if from a fire, soft key from upper-left, isolated on a perfectly flat plain light-grey #d9d9d9 background.
+- INK MARKS: solid black ink on pure white, flat scan, no grey wash, no paper texture.
+
+Grit level: "worn, not filthy" â€” believable use, never grime that reads as dirty food.
+
+Never: text, letters, numbers, logos, watermarks, people, hands, food, utensils, frames or borders, grid lines, drop shadows on the background.
+
+## Output rules
+- Use your built-in image generation tool. Generate at the tool's largest size for the requested orientation (square / landscape / portrait). Exact pixel sizes do not matter; a later script crops, makes tiles seamless and converts black or white backgrounds to transparency. Do NOT try to do that post-processing yourself unless the asset says so.
+- Save the untouched generation to `assets-src/decor/originals/<id>.png` (exact ids in your batch).
+- Look at every image after generating it. Regenerate when it breaks a rule: any text or logo, a background that is not the flat colour asked for, the subject cropped where the brief says it must not be, wrong camera angle, visible frame/border, or an obviously unusable composition. Up to three attempts per asset; keep the best and say so in the manifest notes.
+- Do not edit any code in this repository. Only write files under `assets-src/`.
+- Append one entry per asset to the manifest named in your batch: `{ "id", "file", "prompt", "size", "notes" }`.
+- When finished, print a short summary listing every file and any asset you could not get right.
+# Seared Vegas â€” food asset style guide (shared by every generation batch)
+
+Reference mockup: `websiite refrences/landinpagestryle direcctiion.png` (look at it first: the hero tray and the three category trays are the target look).
+
+## Every asset
+- Photorealistic, warm, appetizing food photography. Warm key light from upper left, soft fill, gentle specular highlights on sauces. Rich but natural color.
+- Camera: consistent elevated three-quarter view (about 35â€“40Â° above the table, looking down at the front-left corner of the container). Same angle across the whole set.
+- Container (when the asset has one): an open, matte-black hinged foam/plastic takeout clamshell. The lid is open and standing up behind the base, hinge at the back. Clean, symmetrical, not warped, no extra lids, no text or logos on it.
+- Black-and-cream checkerboard paper liner tucked into the container where noted, with the checker edges peeking over the rim.
+- The ENTIRE container (including the open lid) must be inside the frame with clear margin on all sides. Nothing cropped.
+- Transparent background (PNG with alpha). No table, no counter, no backdrop, no cast shadow on a floor â€” the website adds shadows. A faint contact shadow directly under the container is NOT wanted either; keep the alpha clean.
+- Square canvas, 1024Ã—1024 (or the tool's largest square), container centered, filling roughly 80% of the width.
+- No text, letters, labels, watermarks or logos anywhere. No flames, smoke columns or food on fire. No utensils, no hands, no garnish piles outside the container.
+- Realistic portions for a food truck plate. No duplicated/merged/malformed ingredients (count the tacos, count the chops).
+
+## Ingredient facts (from the owner's menu)
+- Tycoon Cajun Tacos: each order is TWO tacos. Parmesan-crusted tortilla (golden, crispy cheese crust visible on the tortilla edge), sautÃ©ed bell peppers (red/green/yellow strips), red onions, the protein, finished with a creamy orange-pink "Seared" signature sauce drizzle and a little chopped cilantro/parsley.
+- Large plates: protein served over a base. Bases: Cajun Alfredo penne (creamy, orange-flecked Cajun cream sauce, parsley) / seasoned yellow rice / half pasta + half rice.
+- Loaded Cajun corn: corn on the cob (2â€“3 cobs or cob halves), grilled with char marks, slathered with Cajun butter/crema, grated parmesan/cotija, Cajun seasoning dust, sauce drizzle, chopped parsley.
+
+## Output
+- Save the final transparent PNG to `assets-src/food/<id>.png` (exact ids listed in your batch).
+- If the image tool cannot output real transparency, generate on a perfectly flat, plain light-grey (#d9d9d9) studio background and then remove the background yourself (e.g. `pip install "rembg[cpu]"` and run it with the `isnet-general-use` or `u2net` model, or another reliable method) so the saved PNG has real alpha. Keep the un-cut original as `assets-src/food/originals/<id>.png`.
+- Verify each saved PNG with Python/Pillow: mode RGBA, corners fully transparent, container not clipped by the canvas edge (alpha bbox has margin on all sides). Regenerate anything that fails or looks wrong (wrong protein, malformed container, cropped lid, text artifacts, three tacos, etc.).
+- Append one entry per asset to `assets-src/food/manifest-<batch>.json`: `{ "id", "file", "prompt", "notes" }`.
+
+## Decor and textures
+Non-food assets (paper, char, flames, sparks, brush strokes, burnt edges, the hero counter) follow `assets-src/briefs/decor-style-guide.md`. The full asset system and where each file is used is in `assets-src/briefs/decor-system.md`.
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas."
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural â€” candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup â€” product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup â€” app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram â€” diagrams/infographics with structured layout and text.
+- scientific-educational â€” classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing â€” campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual â€” slide, chart, workflow, and data-heavy business visuals.
+- logo-brand â€” logo/mark exploration, vector-friendly.
+- illustration-story â€” comics, childrenâ€™s book art, narrative scenes.
+- stylized-concept â€” style-driven concept art, 3D/stylized renders.
+- historical-scene â€” period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization â€” translate/replace in-image text, preserve layout.
+- identity-preserve â€” try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit â€” remove/replace a specific element (including interior swaps).
+- lighting-weather â€” time-of-day/season/atmosphere changes only.
+- background-extraction â€” transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer â€” apply reference style while changing subject/scene.
+- compositing â€” multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render â€” drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "git status --short; rg --files assets-src -g 'AGENTS.md' -g '*manifest*' -g '*.py'; Get-ChildItem -LiteralPath 'C:/Users/Theo/.codex/generated_images' -ErrorAction SilentlyContinue | Select-Object -Last 5 Name; python -c \"from PIL import Image; print('Pillow ready')\"" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 2449ms:
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+ M .gitignore
+ M README.md
+ M next.config.ts
+ M src/app/globals.css
+ M src/app/layout.tsx
+ M src/app/page.tsx
+ M tsconfig.json
+?? .claude/
+?? MISSING_MENU_INFO.md
+?? assets-src/
+?? public/brand/
+?? public/food/
+?? scripts/
+?? seared-vegas-hormozi-audit.md
+?? src/components/
+?? src/config/
+?? src/data/
+?? src/lib/
+assets-src\food\manifest-b.json
+assets-src\food\manifest-a.json
+
+Name                                
+----                                
+01a1cc54-e9a2-75e2-9eb9-451e15300250
+01a1cc54-e9ae-7e70-b8d7-386035038174
+01a1cc54-e9b4-7c31-9546-a9affe7446f7
+01a1d189-cb68-7481-aabe-3abeb5ace42b
+01a1d189-cb68-7752-8c86-d0c5c5c7e740
+Program 'python.exe' failed to run: The file cannot be accessed by the systemAt line:2 char:212
++ ... Last 5 Name; python -c "from PIL import Image; print('Pillow ready')"
++                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+At line:2 char:212
++ ... Last 5 Name; python -c "from PIL import Image; print('Pillow ready')"
++                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ResourceUnavailable: (:) [], ApplicationFailedException
+    + FullyQualifiedErrorId : NativeCommandFailed
+ 
+
+
+
+codex
+The hero flames have the requested tall-left, low-middle, medium-right shape. The corner fire is too tall on its first pass; I’ll reduce it to fit the specified lower-left area.
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -LiteralPath 'assets-src/decor' -ErrorAction SilentlyContinue; Get-Content -LiteralPath 'assets-src/food/manifest-b.json' -TotalCount 30; Get-Command py, python3, uv -ErrorAction SilentlyContinue | Select-Object Name, Source; Get-ChildItem -LiteralPath 'C:/Users/Theo/AppData/Local/Programs/Python' -ErrorAction SilentlyContinue; Get-ChildItem -LiteralPath 'C:/Users/Theo/.cache/uv/python' -ErrorAction SilentlyContinue; Get-ChildItem -LiteralPath 'scripts' | Select-Object Name" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1313ms:
+
+
+    Directory: C:\Users\Theo\Desktop\Projects\sered\assets-src\decor
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----        11/12/2026   1:38 PM                originals                                                            
+d-----        11/12/2026   1:34 PM                previews                                                             
+[
+  {
+    "id": "taco-chicken",
+    "file": "assets-src/food/taco-chicken.png",
+    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas food-truck menu cutout, exactly TWO tacos side by side in one open matte-black hinged takeout clamshell, lid standing upright behind base, hinge at back. Each taco is an upright folded golden tortilla with visible crispy Parmesan cheese crust, sauteed red/green/yellow bell pepper strips and red onion, the specified protein prominently visible, restrained creamy orange-pink signature Seared sauce drizzle and a little finely chopped herb. Match the left Tycoon Tacos tray in the previously inspected mockup: two parallel taco openings running from front-left toward back-right, hearty but realistic portions, black-and-cream checker paper tucked into base with edges peeking above rim, clean symmetric whole container. Camera elevated three-quarter 38 degrees, looking down at front-left corner; warm key light upper left, soft fill, natural rich colors, moist food textures. Square 1024x1024, entire container and lid centered, width approximately 80% of canvas, generous clear margin on all sides. True transparent background with clean alpha, no floor/contact shadow, no table/backdrop, text/logo/watermark, utensils/hands, fire/smoke, loose food or garnish outside container. EXACTLY TWO TACOS, clearly distinct. Protein: chopped grilled Cajun chicken, white tender interiors and blackened golden-brown exteriors, clearly identifiable generous chicken chunks in BOTH tacos. Create only this one asset: taco-chicken. Framing revision: Edit the attached taco-chicken image only to fix framing: pull the camera back so the complete container INCLUDING upright lid fits centered within the square canvas with at least 10 percent empty transparent margin at TOP, bottom, left and right. Entire object width about 80 percent. Preserve the exact two chicken tacos, food, tray, checker liner, angle, warm lighting and photorealistic texture. Real transparent background, no floor or contact shadow. No other changes.",
+    "notes": "Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at assets-src/food/originals/taco-chicken-batch-b-generated.png. Pillow verified: 1254x1254 RGBA; four fully transparent corners; alpha bbox (174, 139, 1044, 1130); margins left/top/right/bottom [174, 139, 210, 124] px."
+  },
+  {
+    "id": "taco-steak",
+    "file": "assets-src/food/taco-steak.png",
+    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to diced seared steak with a dark browned crust and clearly visible juicy pink medium centers on the cubes. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-steak.",
+    "notes": "Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at assets-src/food/originals/taco-steak-batch-b-generated.png. Pillow verified: 1254x1254 RGBA; four fully transparent corners; alpha bbox (172, 137, 1044, 1132); margins left/top/right/bottom [172, 137, 210, 122] px."
+  },
+  {
+    "id": "taco-shrimp",
+    "file": "assets-src/food/taco-shrimp.png",
+    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to whole curved blackened Cajun shrimp, peeled and TAILS OFF, recognizable plump segmented shrimp bodies with reddish edges and Cajun spice crust. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-shrimp.",
+    "notes": "Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at assets-src/food/originals/taco-shrimp-batch-b-generated.png. Pillow verified: 1254x1254 RGBA; four fully transparent corners; alpha bbox (172, 137, 1045, 1131); margins left/top/right/bottom [172, 137, 209, 123] px."
+  },
+  {
+    "id": "taco-lamb-chop",
+    "file": "assets-src/food/taco-lamb-chop.png",
+    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to sliced grilled lamb chop meat with rosy interiors and browned exterior, plus exactly ONE small clean frenched lamb rib bone poking out of EACH taco, TWO bones total. Meat is sliced lamb, not whole large chops. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-lamb-chop.",
+    "notes": "Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at assets-src/food/originals/taco-lamb-chop-batch-b-generated.png. Pillow verified: 1254x1254 RGBA; four fully transparent corners; alpha bbox (171, 137, 1045, 1132); margins left/top/right/bottom [171, 137, 209, 122] px."
+  },
+  {
+    "id": "taco-lobster-tail",
+    "file": "assets-src/food/taco-lobster-tail.png",
+    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to generous chunks of buttery red-and-white lobster TAIL meat, plump pearly white flesh with coral-red outer edges, clearly recognizable lobster meat, NO shell, claws, shrimp or bones. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-lobster-tail.",
+    "notes": "Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at assets-src/food/originals/taco-lobster-tail-batch-b-generated.png. Pillow verified: 1254x1254 RGBA; four fully transparent corners; alpha bbox (173, 136, 1045, 1130); margins left/top/right/bottom [173, 136, 209, 124] px."
+
+Name   : py.exe
+Source : C:\Users\Theo\AppData\Local\Programs\Python\Launcher\py.exe
+
+
+Name   : python3.exe
+Source : C:\Users\Theo\AppData\Local\Microsoft\WindowsApps\python3.exe
+
+
+
+    Directory: C:\Users\Theo\AppData\Local\Programs\Python
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         1/21/2026   8:10 AM                Launcher                                                             
+d-----         2/13/2026   6:00 PM                Python312                                                            
+d-----          1/2/2026   6:20 PM                Python313                                                            
+d-----         2/13/2026   6:04 PM                Python314                                                            
+
+Name : optimize-food-images.mjs
+
+
+
+
+codex
+The four fire and spark assets are generated and visually checked. The revised corner fire fits the brief, and the spark sheet has eight separated motifs. Next I’m matching the counter to the hero tray and removing the food from the penne reference tray.
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "& 'C:/Users/Theo/AppData/Local/Programs/Python/Python312/python.exe' -c \"from PIL import Image; import numpy; print('Pillow and numpy ready')\"; Get-ChildItem -LiteralPath 'assets-src/decor/originals' | Select-Object Name; Test-Path -LiteralPath 'assets-src/food/tray-empty.png'; Test-Path -LiteralPath 'assets-src/food/originals/tray-empty.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1392ms:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'PIL'
+
+Name                 
+----                 
+brush-underline-1.png
+char-tile.png        
+grit-tile.png        
+paper-stain.png      
+paper-tile.png       
+False
+False
+
+
+
+codex
+The empty tray preserves the penne reference’s container and camera angle. I’m giving the counter’s top surface more space in the frame before removing its background, then checking that the cream squares remain opaque.
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "& 'C:/Users/Theo/AppData/Local/Programs/Python/Python313/python.exe' -c \"from PIL import Image; import numpy; print('313 Pillow/numpy ready')\"; & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -c \"from PIL import Image; import numpy; print('314 Pillow/numpy ready')\"; Get-ChildItem -LiteralPath 'C:/Users/Theo/.codex' -Directory | Select-Object Name; rg --files assets-src -g '*verify*' -g '*.py' -g '*c2*'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1402ms:
+& : The term 'C:/Users/Theo/AppData/Local/Programs/Python/Python313/python.exe' is not recognized as the name of a 
+cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify 
+that the path is correct and try again.
+At line:2 char:3
++ & 'C:/Users/Theo/AppData/Local/Programs/Python/Python313/python.exe'  ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:/Users/Theo/A...n313/python.exe:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+314 Pillow/numpy ready
+
+assets-src\briefs\batch-c2-fire-objects.md
+assets-src\briefs\batch-c2.log
+Name                             
+----                             
+.sandbox                         
+.sandbox-bin                     
+.sandbox-secrets                 
+.tmp                             
+ambient-suggestions              
+app-server-control               
+app-server-daemon                
+archived_sessions                
+attachments                      
+browser                          
+cache                            
+code-review-plugin               
+codex-remote-attachments         
+computer-use                     
+generated_images                 
+log                              
+memories                         
+node_repl                        
+packages                         
+pets                             
+plugins                          
+rollout-migrations               
+rules                            
+sessions                         
+skills                           
+sqlite                           
+thread-writer-locks              
+tmp                              
+tui-thread-reference-capabilities
+vendor_imports                   
+visualizations                   
+
+
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "if (Test-Path -LiteralPath 'assets-src/decor/originals/hero-flames.png') { throw 'Target already exists: hero-flames' }; Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-1c2a143a-aa94-4e43-96ad-39dcdf161782.png' -Destination 'assets-src/decor/originals/hero-flames.png'
+if (Test-Path -LiteralPath 'assets-src/decor/originals/fire-corner.png') { throw 'Target already exists: fire-corner' }; Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-52c2cf23-c8a3-461c-8904-fd6c652a5432.png' -Destination 'assets-src/decor/originals/fire-corner.png'
+if (Test-Path -LiteralPath 'assets-src/decor/originals/spark-sprite.png') { throw 'Target already exists: spark-sprite' }; Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-6e1ec80e-6fc0-42a5-85a6-352c87dec698.png' -Destination 'assets-src/decor/originals/spark-sprite.png'
+if (Test-Path -LiteralPath 'assets-src/decor/originals/spark-field.png') { throw 'Target already exists: spark-field' }; Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-e226b3fd-d689-405e-9d1b-381b6a2970e5.png' -Destination 'assets-src/decor/originals/spark-field.png'
+if (Test-Path -LiteralPath 'assets-src/decor/originals/hero-counter.png') { throw 'Target already exists: hero-counter' }; Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-31b5eff3-7937-48b7-a7ca-4362d787e50f.png' -Destination 'assets-src/decor/originals/hero-counter.png'
+if (Test-Path -LiteralPath 'assets-src/food/originals/tray-empty.png') { throw 'Target already exists: tray-empty' }; Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-f789b965-365d-485d-886d-7e5183e601c1.png' -Destination 'assets-src/food/originals/tray-empty.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 352ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from PIL import Image
+import numpy as np
+from pathlib import Path
+for p in list(Path('assets-src/decor/originals').glob('*.png')) + [Path('assets-src/food/originals/tray-empty.png')]:
+ if p.stem not in ['hero-flames','fire-corner','spark-sprite','spark-field','hero-counter','tray-empty']: continue
+ im=Image.open(p); a=np.array(im); print(p.name, im.size, im.mode, 'corners', [im.getpixel(q) for q in [(0,0),(im.width-1,0),(0,im.height-1),(im.width-1,im.height-1)]])
+ if p.stem=='hero-counter': print('top patch RGB range',a[:150,:,:3].min((0,1)), a[:150,:,:3].max((0,1)))
+ if im.mode=='RGBA': print('alpha bbox',im.getchannel('A').getbbox(), 'alpha extrema',im.getchannel('A').getextrema())
+'@ | & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1798ms:
+fire-corner.png (1672, 941) RGB corners [(1, 1, 0), (0, 0, 0), (251, 186, 52), (0, 1, 0)]
+hero-counter.png (1672, 941) RGB corners [(210, 209, 208), (209, 209, 207), (210, 208, 209), (209, 208, 209)]
+top patch RGB range [209 209 207] [214 214 213]
+hero-flames.png (1672, 941) RGB corners [(1, 1, 1), (0, 0, 0), (213, 90, 3), (144, 59, 4)]
+spark-field.png (1672, 941) RGB corners [(0, 0, 0), (1, 0, 0), (253, 244, 115), (242, 136, 42)]
+spark-sprite.png (1672, 941) RGB corners [(1, 1, 0), (0, 0, 0), (0, 0, 0), (0, 1, 0)]
+tray-empty.png (1254, 1254) RGBA corners [(0, 0, 0, 0), (0, 0, 0, 0), (0, 0, 0, 0), (0, 0, 0, 0)]
+alpha bbox (0, 41, 1244, 1254) alpha extrema (0, 255)
+
+codex
+Pixel checks found slight noise in the generated backgrounds: the black areas include RGB values around 0–1, and the counter’s grey is not exactly `#d9d9d9`. I’ll try cleaner generations and document any remaining deviation. The originals will stay untouched.
+codex
+The revised spark field has a clearer centre and four bokeh embers. I’m finishing the counter background check and both cutouts. The tray has faint stray alpha pixels outside its silhouette; I’ll remove those from the final only.
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-a0358fa2-4b7e-49c5-b2ab-d0cf5c7daffe.png' -Destination 'assets-src/decor/originals/hero-flames.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-52c2cf23-c8a3-461c-8904-fd6c652a5432.png' -Destination 'assets-src/decor/originals/fire-corner.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-45c670f3-a2b1-4d62-9622-27b8cb7756b1.png' -Destination 'assets-src/decor/originals/spark-sprite.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-cec48310-ed39-4411-9f37-0c81f5115b5c.png' -Destination 'assets-src/decor/originals/spark-field.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-31b5eff3-7937-48b7-a7ca-4362d787e50f.png' -Destination 'assets-src/decor/originals/hero-counter.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e115-7021-bfbd-e1952fa0cea8\\exec-f789b965-365d-485d-886d-7e5183e601c1.png' -Destination 'assets-src/food/originals/tray-empty.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 732ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from PIL import Image
+import numpy as np
+try:
+ import scipy; print('scipy',scipy.__version__)
+except ImportError: print('no scipy')
+for name in ['hero-flames','fire-corner','spark-sprite','spark-field']:
+ a=np.array(Image.open('assets-src/decor/originals/'+name+'.png'))
+ patch=a[:90,600:1000,:3]; print(name,'empty RGB range',patch.min((0,1)),patch.max((0,1)), 'exact black %',round(100*np.all(patch==0,axis=2).mean(),2))
+im=Image.open('assets-src/food/originals/tray-empty.png')
+a=im.getchannel('A')
+for t in [1,5,10,15,20]: print('tray alpha threshold',t, a.point(lambda x:255 if x>t else 0).getbbox())
+'@ | & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 27092ms:
+no scipy
+hero-flames empty RGB range [0 0 0] [1 1 1] exact black % 76.86
+fire-corner empty RGB range [0 0 0] [1 1 1] exact black % 88.03
+spark-sprite empty RGB range [0 0 0] [1 1 1] exact black % 90.87
+spark-field empty RGB range [0 0 0] [1 1 1] exact black % 89.8
+tray alpha threshold 1 (113, 96, 1095, 1174)
+tray alpha threshold 5 (114, 98, 1093, 1172)
+tray alpha threshold 10 (115, 98, 1093, 1172)
+tray alpha threshold 15 (115, 98, 1093, 1172)
+tray alpha threshold 20 (115, 98, 1093, 1172)
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from PIL import Image, ImageDraw, ImageFilter
+import numpy as np
+from pathlib import Path
+p=Path('assets-src/decor/originals/hero-counter.png')
+im=Image.open(p).convert('RGB'); rgb=np.array(im); c=rgb.astype('int16')
+neutral=(c.max(2)-c.min(2)<18)&(c.min(2)>150)
+mask=Image.fromarray((neutral*255).astype('uint8'))
+ImageDraw.floodfill(mask,(0,0),128,thresh=0)
+bg=np.array(mask)==128
+alpha=Image.fromarray((~bg*255).astype('uint8')).filter(ImageFilter.GaussianBlur(0.35))
+a=np.array(alpha); a[a<10]=0; a[a>245]=255
+out=im.convert('RGBA'); out.putalpha(Image.fromarray(a)); out.save('assets-src/decor/hero-counter.png')
+tray=Image.open('assets-src/food/originals/tray-empty.png').convert('RGBA')
+a=np.array(tray.getchannel('A')); a[a<=10]=0; tray.putalpha(Image.fromarray(a))
+tray=tray.resize((1024,1024),Image.Resampling.LANCZOS)
+a=np.array(tray.getchannel('A')); a[a<=1]=0; tray.putalpha(Image.fromarray(a)); tray.save('assets-src/food/tray-empty.png')
+for name,path in [('hero-counter','assets-src/decor/hero-counter.png'),('tray-empty','assets-src/food/tray-empty.png')]:
+ im=Image.open(path); a=np.array(im.getchannel('A')); bbox=im.getchannel('A').getbbox(); corners=[int(a[y,x]) for x,y in [(0,0),(im.width-1,0),(0,im.height-1),(im.width-1,im.height-1)]]
+ print(name,im.mode,im.size,'alpha bbox',bbox,'corners',corners)
+ assert im.mode=='RGBA' and corners==[0,0,0,0]
+ if name=='hero-counter':
+  assert bbox[2]==im.width and np.any(a[:,-1]==255)
+  interior=np.array(im)[250:850,300:1600]; cream=(interior[:,:,0]>140)&(interior[:,:,0].astype('int16')-interior[:,:,2]>25)
+  print('cream interior pixels checked',int(cream.sum()),'min alpha',int(interior[:,:,3][cream].min()))
+  assert np.all(interior[:,:,3][cream]==255)
+ else: assert bbox[0]>0 and bbox[1]>0 and bbox[2]<im.width and bbox[3]<im.height
+ preview=Image.new('RGBA',im.size,'#356575'); preview.alpha_composite(im); preview.convert('RGB').save('assets-src/decor/previews/c2-'+name+'-alpha-check.png')
+'@ | & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 12897ms:
+hero-counter RGBA (1672, 941) alpha bbox (0, 0, 1672, 941) corners [255, 255, 255, 255]
+Traceback (most recent call last):
+  File "<stdin>", line 20, in <module>
+AssertionError
+
+codex
+The new attempts still have RGB 0–1 noise in some black areas, and the counter’s grey remains slightly off the requested colour. I’ve kept the best compositions and will note those limitations in the manifest. The cutouts are now being checked for transparent corners, intact cream squares, and the counter’s required right-edge crop.
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from PIL import Image,ImageDraw
+import numpy as np
+rgb=np.array(Image.open('assets-src/decor/originals/hero-counter.png')).astype('int16'); neutral=(rgb.max(2)-rgb.min(2)<18)&(rgb.min(2)>150)
+m=Image.fromarray((neutral*255).astype('uint8')).copy(); print(m.mode,m.getpixel((0,0)))
+ImageDraw.floodfill(m,(0,0),128,thresh=0); print(m.getpixel((0,0)),np.unique(np.array(m),return_counts=True))
+'@ | & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 23194ms:
+L 255
+128 (array([  0, 128, 255], dtype=uint8), array([1049929,  523363,      60]))
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from PIL import Image, ImageDraw, ImageFilter
+import numpy as np
+im=Image.open('assets-src/decor/originals/hero-counter.png').convert('RGB'); c=np.array(im).astype('int16')
+neutral=(c.max(2)-c.min(2)<18)&(c.min(2)>150)
+mask=Image.fromarray((neutral*255).astype('uint8')).copy()
+ImageDraw.floodfill(mask,(0,0),128,thresh=0)
+bg=np.array(mask)==128
+alpha=Image.fromarray((~bg*255).astype('uint8')).filter(ImageFilter.GaussianBlur(0.35))
+a=np.array(alpha); a[a<10]=0; a[a>245]=255
+out=im.convert('RGBA'); out.putalpha(Image.fromarray(a)); out.save('assets-src/decor/hero-counter.png')
+for name,path in [('hero-counter','assets-src/decor/hero-counter.png'),('tray-empty','assets-src/food/tray-empty.png')]:
+ im=Image.open(path); a=np.array(im.getchannel('A')); bbox=im.getchannel('A').getbbox(); corners=[int(a[y,x]) for x,y in [(0,0),(im.width-1,0),(0,im.height-1),(im.width-1,im.height-1)]]
+ print(name,im.mode,im.size,'alpha bbox',bbox,'corners',corners,flush=True)
+ assert im.mode=='RGBA' and corners==[0,0,0,0]
+ if name=='hero-counter':
+  assert bbox[2]==im.width and np.any(a[:,-1]==255)
+  interior=np.array(im)[250:850,300:1600]; cream=(interior[:,:,0]>140)&(interior[:,:,0].astype('int16')-interior[:,:,2]>25)
+  print('cream interior pixels checked',int(cream.sum()),'min alpha',int(interior[:,:,3][cream].min()),flush=True)
+  assert np.all(interior[:,:,3][cream]==255)
+ else: assert bbox[0]>0 and bbox[1]>0 and bbox[2]<im.width and bbox[3]<im.height
+ preview=Image.new('RGBA',im.size,'#356575'); preview.alpha_composite(im); preview.convert('RGB').save('assets-src/decor/previews/c2-'+name+'-alpha-check.png')
+'@ | & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -u -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 29094ms:
+hero-counter RGBA (1672, 941) alpha bbox (49, 212, 1672, 883) corners [0, 0, 0, 0]
+cream interior pixels checked 421006 min alpha 255
+tray-empty RGBA (1024, 1024) alpha bbox (92, 79, 895, 958) corners [0, 0, 0, 0]
+
+codex
+The selected originals are saved. The empty tray’s final is 1024×1024 with transparent margins. I’m completing the counter’s alpha check and recording the selected attempts and background-colour limitations in the manifest.
+apply patch
+patch: completed
+C:\Users\Theo\Desktop\Projects\sered\assets-src\decor\manifest-c2.json
+diff --git a/assets-src/decor/manifest-c2.json b/assets-src/decor/manifest-c2.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..a3aa9bfc8679c6b00787e9027ede0a013298a898
+--- /dev/null
++++ b/assets-src/decor/manifest-c2.json
+@@ -0,0 +1,44 @@
++[
++  {
++    "id": "hero-flames",
++    "file": "assets-src/decor/originals/hero-flames.png",
++    "prompt": "Use case: photorealistic-natural. Generate hero-flames, a landscape raster production asset at the largest available landscape size. Realistic open fire flames isolated on pure solid black (#000000), crisp fast shutter. Orange, amber and yellow flames with deep red tips (#a3270c) and a hot pale core (#ffe2a0) near the base, a few small flying sparks. The flames rise from one straight horizontal line along the very bottom edge of the frame and span the full width. Left to right: a tall, dense cluster of licking flames in the left third (reaching about 70% of the frame height); a low, short band of small flames across the middle (about 20% of the height); a medium cluster in the right third (about 50% of the height). Every flame tip ends inside the frame against black. No logs, no grill, no wood, no smoke, no ground, no reflections. Background must be exact flat true black to canvas edges wherever there are no flames. No text, logos, labels, watermarks, frames or borders. Seared Vegas night food truck art direction: fire is the only light source, photorealism, warm colors only. No food. This image contains only flames and the few small sparks on black. STRICT OUTPUT REQUIREMENT: photograph only the flame material, then isolate it against a mathematically solid pure RGB(0,0,0) black digital background. The black negative space must be perfectly flat #000000, without sensor grain, dithering, compression noise, texture, glow, gradient, or dark gray tint. Output lossless PNG. Flame tips must remain entirely visible, bounded inside the canvas. Keep the tallest left cluster to 70% height and right cluster 50%, center only 20%.",
++    "size": "1672x941",
++    "notes": "Built-in image_gen; selected attempt 2 of 2, visually inspected. Largest requested landscape returned 1672x941. Untouched generated PNG. Tall left cluster, low middle, medium right cluster, full-width bottom origin and contained tips. Limitation: sampled empty background has RGB 0-1 generation noise rather than uniformly exact #000000; sample [600,0,1000,90] is 76.86% exact black. Regeneration with explicit lossless solid-black instructions did not eliminate this. No background conversion or other post-processing performed."
++  },
++  {
++    "id": "fire-corner",
++    "file": "assets-src/decor/originals/fire-corner.png",
++    "prompt": "Use case: photorealistic-natural. Generate fire-corner, landscape production asset at the largest available landscape size. Fire rising from the bottom-left corner only, on pure solid black (#000000). Deep red-orange flame tongues (#a3270c, #d63b17, #ff7a1a, hot core #ffe2a0 at the base), a soft orange heat haze hugging the bottom-left edge, and dozens of small streaky sparks drifting up and to the right with slight motion blur. The fire mass stays within the bottom-left 45% of the width and 55% of the height. Everything beyond the middle of the frame, and the whole top-right half, is perfectly black: contain ALL sparks and fire in the left half too. No smoke columns, no objects, no ground. Photographic flames with crisp fast shutter texture, subtle motion on the sparks only. No food, wood, logs, grill, reflections, text, labels, letters, numbers, logos, watermarks, frames or borders. Background pure #000000 with no texture or gradient outside the small bottom-left heat haze. CRITICAL LAYOUT: leave the entire upper 45% of the canvas absolutely empty black. The highest flame tip is at y=48% measured down from the top; the main fire occupies the bottom-left quarter. Flame height must NEVER exceed 55% of the canvas. Keep a wide untouched black margin above all flames. Reduce the fire mass; do not create a tall plume.",
++    "size": "1672x941",
++    "notes": "Built-in image_gen; selected attempt 2 of 3, visually inspected. Untouched generated PNG. Attempt 1 was too tall; attempt 2 best matched the low-left mass, heat haze and spark density. Attempt 3 did not improve exact background color. Fire mass stays within approximately left 45% and lower 55%; right half visually black. Limitation: sampled empty background has RGB 0-1 noise rather than uniformly exact #000000; sample [600,0,1000,90] is 88.03% exact black. No post-processing performed."
++  },
++  {
++    "id": "spark-sprite",
++    "file": "assets-src/decor/originals/spark-sprite.png",
++    "prompt": "Use case: photorealistic-natural. Generate spark-sprite, a landscape production sprite reference sheet at the largest available landscape size. EIGHT separate photographic fire spark motifs on pure solid black (#000000), arranged in two rows of four, each isolated with wide black space around it. They are cut apart later, so they must not touch or overlap, and nothing may sit between them. Read left to right, top row then bottom row. Top row: (1) a tiny white-hot round spark; (2) a soft round orange ember with a halo; (3) a thin vertical spark streak, bright head at the top, fading tail below; (4) a longer thin streak, slightly tilted. Bottom row: (5) an irregular flake of glowing ash with a darker edge; (6) two sparks close together as one isolated motif; (7) a dim cooling deep-red ember; (8) a small forked crackling spark. Colour ramp: #ffe2a0 core, then #ff7a1a, then #a3270c falloff. Each motif is small, about 8% of the image width or less; thin streaks especially narrow. Motif centers at 12.5%, 37.5%, 62.5%, 87.5% of width and 25%, 75% of height. No other stray particles whatsoever. No grid lines, labels, numbers, letters, text, logos, watermarks, frames or borders. No fire masses, smoke, objects, food, ground or reflections. Flat true black right to all canvas edges. STRICT OUTPUT REQUIREMENT: isolate the eight photographic sparks on mathematically solid pure RGB(0,0,0) black digital background. All negative space must be exactly #000000 without sensor grain, compression noise, dithering, texture, gray tint or gradients. Output lossless PNG. Keep the eight isolated types in their two rows of four with completely empty black between. Spark streak length at most 8% image width.",
++    "size": "1672x941",
++    "notes": "Built-in image_gen; selected attempt 2 of 2, visually inspected. Untouched generated PNG. Eight separate motifs in two rows of four, including the paired-spark motif, with ample separation; second attempt shortened streaks. Limitation: sampled empty background has RGB 0-1 noise rather than uniformly exact #000000; sample [600,0,1000,90] is 90.87% exact black. Regeneration did not eliminate this. No cutting, conversion or other post-processing performed."
++  },
++  {
++    "id": "spark-field",
++    "file": "assets-src/decor/originals/spark-field.png",
++    "prompt": "Use case: photorealistic-natural. Generate spark-field, landscape production asset at the largest available landscape size. Floating fire sparks and glowing embers on pure solid black (#000000). Hundreds of tiny orange, amber and yellow-white sparks: sharp pinpoints, short curved motion-blurred streaks drifting upward and slightly sideways, and exactly 3–4 larger soft out-of-focus bokeh embers. Density is highest along the far left and far right edges and in the bottom corners. The central 50% of the frame is almost empty black, keep an uninterrupted large black negative-space region for website text. No flames, no smoke, no glowing fog. Colour ramp #ffe2a0 hot cores, #ff7a1a orange, #a3270c cooling red with warm amber #f2b632; no cool colors. Photographic particle overlay, true flat #000000 background right to the canvas edges between sparks. No food, objects, ground, reflections, text, letters, numbers, logos, watermarks, frames, borders or grids. STRICT OUTPUT REQUIREMENT: isolate photographed sparks on a mathematically solid pure RGB(0,0,0) black digital background. Empty space must be exactly #000000 without sensor grain, compression noise, dithering, texture, glow, gray tint or gradients. Output lossless PNG. Central 50% must remain empty with just very few stray pinpoints at its boundary. Keep 3–4 bokeh embers, scattered hundreds of tiny sparks on the far sides and lower corners, no flame-like bright masses.",
++    "size": "1672x941",
++    "notes": "Built-in image_gen; selected attempt 2 of 2, visually inspected. Untouched generated PNG. Hundreds of edge/corner sparks, four soft bokeh embers and nearly empty central 50%; selected for cleaner corners without flame-like bright masses. Limitation: sampled empty background has RGB 0-1 noise rather than uniformly exact #000000; sample [600,0,1000,90] is 89.80% exact black. Regeneration did not eliminate this. No background conversion or other post-processing performed."
++  },
++  {
++    "id": "hero-counter",
++    "file": "assets-src/decor/hero-counter.png",
++    "prompt": "Use case: product-mockup. Generate hero-counter, landscape at largest available landscape size. The attached hero-tray.png is CAMERA reference only: its food tray will later be placed on this counter. Do NOT include the tray or any food. Match its front-on, symmetrical camera raised roughly 25–30 degrees. Product photograph of a long, low rectangular display block covered in a black-and-cream checkerboard vinyl tablecloth (squares about 9 cm, cream #efe1c3 and near-black #15100c) pulled tight over it. Camera faces the long front face squarely, raised about 25–30 degrees looking down onto the top surface; symmetrical perspective, vanishing point centred. Do NOT use a three-quarter or diagonal view. Front horizontal edges must be horizontal, parallel to bottom of image. Top face takes about 40% of the image height and front vertical face about 30%. Both faces checkered, with a crisp, slightly rounded edge between them. Block LEFT end is a clean square corner with clear background to left of it. Block continues past RIGHT edge of frame (cropped on right on purpose), showing no right end. Leave background above and below. Cloth subtly real: faint creases, slight grease sheen, a little soot speckle near front edge; cream squares warm and aged, not pure white. Warm orange rim light from below-left and behind as if from fire, soft key from upper-left. Top surface glows softly where a food container will sit centre-right; front face darker. Isolated on perfectly flat plain #d9d9d9. Nothing on block: no food, props, objects, utensils, fire, smoke. No background/floor/contact shadow; no text, letters, numbers, labels, logos, watermarks, frames or borders. Worn, not filthy. Counter only. STRICT FRAMING REVISION: the back horizontal edge of the top face lies at y=20% of canvas height; the front horizontal fold separating top and front face lies at y=60%; the bottom edge lies at y=90%. Thus TOP face height exactly about 40% and FRONT face height about 30%. Show a broad, deep top surface where the hero tray can sit. Front left corner x=6% and back left corner x=15%, leaving clear grey to its left; right side continues beyond canvas. Keep the front face square to camera with horizontal edges. The light gray background must be uniform solid #d9d9d9 with absolutely NO photographic texture, noise, shadow, mottling, gradient, vignette or glow anywhere on the background; confine all lighting and realism to the counter itself.",
++    "size": "1672x941",
++    "notes": "Built-in image_gen using assets-src/food/hero-tray.png as camera reference; selected attempt 2 of 3. Untouched original: assets-src/decor/originals/hero-counter.png (1672x941 RGB). Attempt 2 improved top/front proportions; background-only attempt 3 did not improve the grey and was discarded. Limitation: original grey is slightly textured/off-target; sampled top area RGB range [209,209,207] to [214,214,213], not exact #d9d9d9. Final background removed with Pillow: flood-fill border-connected light neutral pixels (minimum channel >150, channel range <18), preserve enclosed pixels, lightly antialias silhouette (0.35px Gaussian; alpha <10 to 0, >245 to 255). Final visually inspected on contrasting background. Pillow verified RGBA 1672x941, four corner alpha values 0, alpha bbox [49,212,1672,883], opaque pixels on right edge, clear left margin. All 421006 warm cream pixels checked in interior [300,250,1600,850] retain alpha 255. No holes in checker squares."
++  },
++  {
++    "id": "tray-empty",
++    "file": "assets-src/food/tray-empty.png",
++    "prompt": "Use case: precise-object-edit. Input assets-src/food/base-penne.png is the exact EDIT TARGET and composition reference. Create tray-empty on a 1024x1024 square canvas. Remove ALL pasta, food, sauce, herbs and crumbs from inside this container, revealing the black-and-cream checkerboard paper liner covering the empty bottom. Keep the IDENTICAL open matte-black hinged clamshell, identical elevated three-quarter camera looking toward the front-left corner at 35–40 degrees, identical object scale and relative canvas position, same lid open and standing behind, same exterior silhouette, foam texture, lighting, rim and checker paper edges peeking over the rim, slightly crumpled and tucked inside. Make the liner empty and clean. No food, sauce, crumbs or stains whatsoever. Entire container and upright lid remain inside the frame with clear margin on every side, width roughly 80% of canvas. Warm key light from upper left, soft fill, natural realistic product photograph. Output with TRUE TRANSPARENT alpha background, no table, counter, backdrop, cast shadow or even faint contact shadow beneath the container. No text, letters, labels, watermarks, logos, flames, smoke, utensils, hands or extra objects. Preserve the original container's identity and composition precisely while removing food.",
++    "size": "1024x1024",
++    "notes": "Built-in image_gen, one attempt; precise food-removal edit of assets-src/food/base-penne.png. Identical container composition, elevated three-quarter camera, upright lid and checker liner retained; completely empty. Untouched native transparent generation saved to assets-src/food/originals/tray-empty.png (1254x1254 RGBA). Final removes stray background alpha <=10/255, resizes with Lanczos to requested 1024x1024, then clears alpha <=1/255. Visually inspected on contrasting background. Pillow verified RGBA 1024x1024; all four corners alpha 0; alpha bbox [92,79,895,958], margins left/top/right/bottom [92,79,129,66] pixels. Entire container and lid unclipped; no food or contact shadow."
++  }
++]
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Remove-Item -LiteralPath 'assets-src/decor/previews/c2-hero-counter-alpha-check.png', 'assets-src/decor/previews/c2-tray-empty-alpha-check.png'
+@'
+from pathlib import Path
+from PIL import Image
+import json
+m=json.loads(Path('assets-src/decor/manifest-c2.json').read_text())
+assert len(m)==6 and len({e['id'] for e in m})==6
+for e in m:
+ assert set(e)=={'id','file','prompt','size','notes'}
+ p=Path(e['file']); im=Image.open(p); im.verify(); print(e['id'],p.stat().st_size,'bytes',e['size'])
+print('Manifest: six entries, all files valid PNGs.')
+'@ | & 'C:/Users/Theo/AppData/Local/Programs/Python/Python314/python.exe' -u -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 2572ms:
+hero-flames 1135098 bytes 1672x941
+fire-corner 621126 bytes 1672x941
+spark-sprite 283963 bytes 1672x941
+spark-field 617411 bytes 1672x941
+hero-counter 1834277 bytes 1672x941
+tray-empty 939140 bytes 1024x1024
+Manifest: six entries, all files valid PNGs.
+
+codex
+Saved all six assets and verified both transparent finals with Pillow.
+
+Under `assets-src/`:
+
+- `decor/originals/hero-flames.png`
+- `decor/originals/fire-corner.png`
+- `decor/originals/spark-sprite.png`
+- `decor/originals/spark-field.png`
+- `decor/originals/hero-counter.png`
+- `decor/hero-counter.png`
+- `food/originals/tray-empty.png`
+- `food/tray-empty.png`
+- [decor/manifest-c2.json](/C:/Users/Theo/Desktop/Projects/sered/assets-src/decor/manifest-c2.json)
+
+Remaining deviations: fire/spark backgrounds contain slight RGB 0–1 noise; the counter original’s grey isn’t exact `#d9d9d9`. Originals remain untouched. The manifest records prompts, attempts and limitations. Counter cream squares remain opaque; tray margins are transparent and unclipped.
+tokens used
+72,899
+Saved all six assets and verified both transparent finals with Pillow.
+
+Under `assets-src/`:
+
+- `decor/originals/hero-flames.png`
+- `decor/originals/fire-corner.png`
+- `decor/originals/spark-sprite.png`
+- `decor/originals/spark-field.png`
+- `decor/originals/hero-counter.png`
+- `decor/hero-counter.png`
+- `food/originals/tray-empty.png`
+- `food/tray-empty.png`
+- [decor/manifest-c2.json](/C:/Users/Theo/Desktop/Projects/sered/assets-src/decor/manifest-c2.json)
+
+Remaining deviations: fire/spark backgrounds contain slight RGB 0–1 noise; the counter original’s grey isn’t exact `#d9d9d9`. Originals remain untouched. The manifest records prompts, attempts and limitations. Counter cream squares remain opaque; tray margins are transparent and unclipped.

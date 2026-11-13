@@ -1,0 +1,762 @@
+Reading additional input from stdin...
+OpenAI Codex v0.166.0
+--------
+workdir: C:\Users\Theo\Desktop\Projects\sered
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1d1af-e11e-7132-8938-8f00b087c6d9
+--------
+user
+Follow the brief below exactly. Working directory is the Seared Vegas website repo.
+
+<stdin>
+# Batch C1 — paper, char, grit, brush strokes, burnt paper edges
+
+Read `assets-src/briefs/decor-style-guide.md` and look at the mockup image `websiite refrences/landinpagestryle direcctiion.png` before generating anything. Follow the output rules in the style guide exactly. Manifest: `assets-src/decor/manifest-c1.json`.
+
+Generate these assets (ids are the file names under `assets-src/decor/originals/`):
+
+1. `paper-tile` (square) — Tileable texture: flat top-down scan of aged cream butcher paper. Warm cream base averaging #f0dfbb, subtle long paper fibres, very faint mottled tea-stain blotches in slightly darker tan (#e2c896), a sparse sprinkle of tiny dark grit specks. No folds, creases, tears, burn marks, grease rings, vignette, lighting gradient or shadows. Contrast must stay LOW because black display type sits on it. Uniform all over — no feature that would be noticed when the image repeats.
+
+2. `char-tile` (square) — Tileable texture: flat top-down scan of a soot-blackened surface, halfway between seasoned cast-iron griddle steel and charred butcher paper. Near-black warm charcoal, #0f0b08 to #241a13 only, averaging #16110d. Very subtle soot mottling, faint smudges, a few hairline scuffs, rare tiny dull rust-orange scorch specks. Extremely low contrast, even lighting, no vignette, no highlights, no grill grates, no distinct spots that would visibly repeat.
+
+3. `grit-tile` (square) — Tileable greyscale texture: worn screen-print ink on card stock. Mostly white (values between 70% and 100%, never solid black), with evenly scattered small irregular grey speckles, fine hairline scuffs and a few small worn patches. High frequency only: no large shapes, gradients, vignette or clusters.
+
+4. `paper-stain` (landscape) — A flat, evenly lit image used later as a MULTIPLY overlay: mostly pure white, with soft warm-sepia aged-paper effects (#c9a676 to #a87a45). A gentle darker toasted border along all four edges, strongest at the top-left and top-right corners; three or four very faint irregular tea-stain clouds in the middle third; a few long pale fibre streaks. The centre stays nearly white. No tears, fold lines, hard edges, rings or objects.
+
+5. `brush-underline-1` (landscape) — A single horizontal dry-brush paint stroke in solid black on pure white, one fast confident swipe with a wide flat bristle brush. Thick and dense at the left start with a blunt pressed edge, rising slightly (2–4°) to the right, then thinning and breaking into dry bristle streaks and scratchy gaps at the right tail. Visible bristle texture inside the stroke, ragged edges. No splatter outside the stroke, no drips. The stroke is long and thin (about 10:1), vertically centred, filling about 90% of the width with clear white margin all round. Only ONE stroke in the image.
+
+6. `brush-underline-2` (landscape) — Same as `brush-underline-1`, but shorter and flatter, with a slight upward hook at the right end. A clearly different stroke, not a copy.
+
+7. `brush-underline-3` (landscape) — Same as `brush-underline-1`, but thinner, with a longer, wispier tail. A clearly different stroke, not a copy.
+
+8. `brush-rule` (landscape) — One long, perfectly horizontal hand-inked rule in solid black on pure white, drawn in one pass with a slightly dry flat marker. Thin (about 40:1), mostly even thickness with subtle wobble, dry broken ends, a few bristle gaps. Vertically centred, spanning about 94% of the width. Only ONE line in the image.
+
+9. `scorch-edge` (landscape) — Photorealistic macro of the TOP edge of a sheet of aged cream butcher paper (#f3e3c2), torn by hand and then burnt, shot perfectly straight-on (flat, no perspective, no depth of field), on pure black #000000. The paper fills the bottom ~50% of the frame and runs off the left, right and bottom edges. The torn, burnt edge runs horizontally across the FULL width at a roughly constant height, with organic, non-repeating bites, lobes and fibre wisps; its amplitude is about 6–10% of the image height. Along the edge: a thin band of black char, then a glowing ember rim of deep orange (#ff6a10) with a few small yellow-white hot spots tracing the tear, and a faint orange glow haze bleeding up into the black above. The paper just below the edge is toasted brown and fades back to clean, plain, flat cream within about 12% of the image height. A few tiny ember specks float above the edge. No smoke, no flames taller than a few pixels. The left and right ends of the edge should be at about the same height so the strip can repeat.
+
+10. `scorch-corner` (landscape) — Straight-on, evenly lit view of the TOP-LEFT corner of a sheet of aged cream paper (#f3e3c2) on pure black #000000. The paper fills the frame except for a black margin along the top and left. The corner is burnt: an irregular charred black edge with a thin glowing ember rim (#ff6a10 with small yellow-white hot spots) runs along the top edge and turns down the left side for about a third of the height. Toasted brown scorching fades inward to clean flat cream. Two small round charred burn holes with glowing rims sit near the corner, and a few ember specks float just outside the edge. The bottom-right half of the image is plain, clean, flat cream paper. No smoke, no flames.
+
+Write `assets-src/decor/manifest-c1.json`. When finished, print a short summary listing every file and any asset you could not get right.
+</stdin>
+codex
+I’m using the imagegen skill. I’ll read the style guide and inspect the reference mockup, then generate the ten assets and write the manifest.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'C:/Users/Theo/.codex/skills/.system/imagegen/SKILL.md'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 3183ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas."
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural â€” candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup â€” product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup â€” app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram â€” diagrams/infographics with structured layout and text.
+- scientific-educational â€” classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing â€” campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual â€” slide, chart, workflow, and data-heavy business visuals.
+- logo-brand â€” logo/mark exploration, vector-friendly.
+- illustration-story â€” comics, childrenâ€™s book art, narrative scenes.
+- stylized-concept â€” style-driven concept art, 3D/stylized renders.
+- historical-scene â€” period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization â€” translate/replace in-image text, preserve layout.
+- identity-preserve â€” try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit â€” remove/replace a specific element (including interior swaps).
+- lighting-weather â€” time-of-day/season/atmosphere changes only.
+- background-extraction â€” transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer â€” apply reference style while changing subject/scene.
+- compositing â€” multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render â€” drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'assets-src/briefs/decor-style-guide.md'; Get-Content -LiteralPath 'AGENTS.md'; Get-ChildItem -LiteralPath 'assets-src/decor' -Force" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1261ms:
+# Seared Vegas â€” decor & texture style guide (shared by every decor batch)
+
+Reference mockup: `websiite refrences/landinpagestryle direcctiion.png`. Look at it first: the scorched dark background, the flames and sparks at the edges, the checkered counter block under the hero tray, the torn burnt paper edge glowing orange, the aged cream paper, the dry-brush underlines. Those materials are what this batch produces. The food trays already exist; do NOT generate food.
+
+## Art direction (applies to every asset)
+World: a Las Vegas Cajun food truck at night. Two materials only: (1) CHAR â€” soot-black griddle steel / charred butcher paper; (2) PAPER â€” aged cream butcher paper. Fire is the only light source in the world.
+
+Palette (use only these): char #120e0b, char-2 #1b1511, char-3 #261e18, cream #f6ead0, paper #f3e3c2, paper-2 #ead4a8, ink #18110c, flame-deep #a3270c, flame #d63b17, flame-hot #f25a1f, ember #ff7a1a, gold #f2b632, hot core #ffe2a0. No blues, greens, purples or cool greys.
+
+Lighting by asset type:
+- TEXTURE TILES: perfectly flat top-down scan, even light edge to edge, no vignette, no directional light, no single dominant feature, LOW contrast.
+- FIRE / SPARKS: isolated on PURE #000000 black, nothing else in frame, photographic, crisp fast shutter. The black must be true black right to the canvas edges (it is converted to transparency later).
+- OBJECTS: product photography, warm rim light from below-left as if from a fire, soft key from upper-left, isolated on a perfectly flat plain light-grey #d9d9d9 background.
+- INK MARKS: solid black ink on pure white, flat scan, no grey wash, no paper texture.
+
+Grit level: "worn, not filthy" â€” believable use, never grime that reads as dirty food.
+
+Never: text, letters, numbers, logos, watermarks, people, hands, food, utensils, frames or borders, grid lines, drop shadows on the background.
+
+## Output rules
+- Use your built-in image generation tool. Generate at the tool's largest size for the requested orientation (square / landscape / portrait). Exact pixel sizes do not matter; a later script crops, makes tiles seamless and converts black or white backgrounds to transparency. Do NOT try to do that post-processing yourself unless the asset says so.
+- Save the untouched generation to `assets-src/decor/originals/<id>.png` (exact ids in your batch).
+- Look at every image after generating it. Regenerate when it breaks a rule: any text or logo, a background that is not the flat colour asked for, the subject cropped where the brief says it must not be, wrong camera angle, visible frame/border, or an obviously unusable composition. Up to three attempts per asset; keep the best and say so in the manifest notes.
+- Do not edit any code in this repository. Only write files under `assets-src/`.
+- Append one entry per asset to the manifest named in your batch: `{ "id", "file", "prompt", "size", "notes" }`.
+- When finished, print a short summary listing every file and any asset you could not get right.
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes â€” APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` â€” verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
+
+    Directory: C:\Users\Theo\Desktop\Projects\sered\assets-src\decor
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----        11/12/2026   1:34 PM                originals                                                            
+d-----        11/12/2026   1:34 PM                previews                                                             
+
+
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -LiteralPath 'assets-src/decor/originals' -Force; Get-ChildItem -LiteralPath 'C:/Users/Theo/.codex/generated_images' -ErrorAction SilentlyContinue | Select-Object -Last 4 Name,LastWriteTime; git status --short" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 917ms:
+
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+ M .gitignore
+ M README.md
+ M next.config.ts
+ M src/app/globals.css
+ M src/app/layout.tsx
+ M src/app/page.tsx
+ M tsconfig.json
+?? .claude/
+?? MISSING_MENU_INFO.md
+?? assets-src/
+?? public/brand/
+?? public/food/
+?? scripts/
+?? seared-vegas-hormozi-audit.md
+?? src/components/
+?? src/config/
+?? src/data/
+?? src/lib/
+Name                                 LastWriteTime         
+----                                 -------------         
+01a1cc54-e9ae-7e70-b8d7-386035038174 11/11/2026 12:39:30 PM
+01a1cc54-e9b4-7c31-9546-a9affe7446f7 11/11/2026 12:39:23 PM
+01a1d189-cb68-7481-aabe-3abeb5ace42b 11/12/2026 1:04:35 PM 
+01a1d189-cb68-7752-8c86-d0c5c5c7e740 11/12/2026 1:05:14 PM 
+
+
+
+codex
+The mockup and guide are clear. I’ll generate separate, untouched PNGs, keeping the tiles low contrast, the ink marks black on white, and the scorched edges on black. Cropping, seamless tiling, and transparency conversion will stay with the later processing script.
+
+codex
+The three tiles have generated and passed visual review: the cream and charcoal are subdued, and the grit is fine and evenly spread. Next are the stain overlay and four ink marks.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-2c4961c1-3a7d-4b00-80f4-fde78e24463c.png' -Destination 'assets-src/decor/originals/paper-tile.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 831ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-df8329c8-53e7-40d4-b64e-ceae27aa9c57.png' -Destination 'assets-src/decor/originals/char-tile.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 437ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-1b8020bd-76b2-4a85-915c-05878280cf72.png' -Destination 'assets-src/decor/originals/grit-tile.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 312ms:
+codex
+The underlines are visibly distinct, and the stain overlay keeps a nearly white centre. The first brush rule is too thin for the requested 40:1 proportion, so I’m regenerating it alongside the two scorched-paper assets.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-bcec710d-e22f-4978-9fad-496798c15b82.png' -Destination 'assets-src/decor/originals/paper-stain.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1131ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-c02d892d-9907-48a1-8a6d-8fbe086ccf9b.png' -Destination 'assets-src/decor/originals/brush-underline-1.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 706ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-7982ea64-1899-4292-b2c3-04d74c7fd713.png' -Destination 'assets-src/decor/originals/brush-underline-2.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 600ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-d4efd708-8579-4471-aa7f-e6d4323286a7.png' -Destination 'assets-src/decor/originals/brush-underline-3.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 586ms:
+codex
+The revised brush rule has the right weight, and the horizontal scorch edge has passed review. The corner’s glow extends too far down the left side; I’m retrying it with the burn confined to the upper third.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-89546e68-1e2d-4e57-8591-724599fde8d2.png' -Destination 'assets-src/decor/originals/brush-rule.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-513cd7b5-632d-46e3-ab98-83fee7707f39.png' -Destination 'assets-src/decor/originals/scorch-edge.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 241ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Add-Type -AssemblyName System.Drawing
+Get-ChildItem -LiteralPath 'assets-src/decor/originals' -Filter '*.png' | ForEach-Object { "'$img = [System.Drawing.Bitmap]::FromFile($_.FullName); [pscustomobject]@{id=$_.BaseName; size=('"'{0}x{1}' -f "'$img.Width,$img.Height); corner=('"'{0},{1},{2}' -f "'$img.GetPixel(0,0).R,$img.GetPixel(0,0).G,$img.GetPixel(0,0).B)}; $img.Dispose() } | ConvertTo-Json' in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 850ms:
+[
+    {
+        "id":  "brush-rule",
+        "size":  "1774x887",
+        "corner":  "253,255,255"
+    },
+    {
+        "id":  "brush-underline-1",
+        "size":  "2172x724",
+        "corner":  "254,253,255"
+    },
+    {
+        "id":  "brush-underline-2",
+        "size":  "2172x724",
+        "corner":  "253,255,254"
+    },
+    {
+        "id":  "brush-underline-3",
+        "size":  "2172x724",
+        "corner":  "253,253,255"
+    },
+    {
+        "id":  "char-tile",
+        "size":  "1254x1254",
+        "corner":  "27,20,12"
+    },
+    {
+        "id":  "fire-corner",
+        "size":  "1672x941",
+        "corner":  "1,1,0"
+    },
+    {
+        "id":  "grit-tile",
+        "size":  "1254x1254",
+        "corner":  "228,232,229"
+    },
+    {
+        "id":  "hero-counter",
+        "size":  "1672x941",
+        "corner":  "210,209,208"
+    },
+    {
+        "id":  "hero-flames",
+        "size":  "1672x941",
+        "corner":  "1,1,1"
+    },
+    {
+        "id":  "paper-stain",
+        "size":  "1672x941",
+        "corner":  "182,129,79"
+    },
+    {
+        "id":  "paper-tile",
+        "size":  "1254x1254",
+        "corner":  "236,207,155"
+    },
+    {
+        "id":  "scorch-edge",
+        "size":  "1672x941",
+        "corner":  "0,0,0"
+    },
+    {
+        "id":  "spark-field",
+        "size":  "1672x941",
+        "corner":  "0,0,0"
+    },
+    {
+        "id":  "spark-sprite",
+        "size":  "1672x941",
+        "corner":  "1,1,0"
+    }
+]
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+const sharp = require('sharp');
+(async()=>{for(const id of ['paper-tile','char-tile','grit-tile','brush-underline-1','brush-underline-2','brush-underline-3','brush-rule']){const path='assets-src/decor/originals/'+id+'.png';const s=await sharp(path).stats(); console.log(JSON.stringify({id,channels:s.channels.map(c=>({min:c.min,max:c.max,mean:c.mean,stdev:c.stdev}))}));}})();
+'@ | node" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 924ms:
+{"id":"paper-tile","channels":[{"min":119,"max":253,"mean":237.354931841711,"stdev":2.9782743490917687},{"min":91,"max":229,"mean":209.36728720089334,"stdev":4.090546375847443},{"min":42,"max":183,"mean":155.29677345095376,"stdev":5.751085573579369}]}
+{"id":"char-tile","channels":[{"min":14,"max":54,"mean":23.218526870314832,"stdev":2.725578032680385},{"min":8,"max":35,"mean":15.065807279544373,"stdev":1.9699918656101651},{"min":2,"max":23,"mean":8.21835199133109,"stdev":1.5784814600972545}]}
+{"id":"grit-tile","channels":[{"min":99,"max":255,"mean":245.98663479417698,"stdev":9.152906059165284},{"min":99,"max":255,"mean":246.07297668195426,"stdev":9.208485285539057},{"min":100,"max":255,"mean":246.20144278341206,"stdev":8.905851200116908}]}
+{"id":"brush-underline-1","channels":[{"min":0,"max":255,"mean":213.27180501714437,"stdev":91.116541924378},{"min":0,"max":255,"mean":213.15201128374184,"stdev":91.068562298036},{"min":0,"max":255,"mean":213.22825030778466,"stdev":91.180103187627}]}
+{"id":"brush-underline-2","channels":[{"min":0,"max":255,"mean":236.6039619008374,"stdev":62.577102710956154},{"min":0,"max":255,"mean":236.45864874902068,"stdev":62.514847433135785},{"min":0,"max":255,"mean":236.59823608864198,"stdev":62.569327470008396}]}
+{"id":"brush-underline-3","channels":[{"min":0,"max":255,"mean":242.36760044972172,"stdev":50.935755014826455},{"min":0,"max":255,"mean":242.21773030432527,"stdev":50.887180955385965},{"min":0,"max":255,"mean":242.36711079230386,"stdev":50.92869483370801}]}
+{"id":"brush-rule","channels":[{"min":0,"max":255,"mean":243.51499741347206,"stdev":50.23864781868685},{"min":0,"max":255,"mean":243.33569192482165,"stdev":50.24135013738733},{"min":0,"max":255,"mean":243.44536325147533,"stdev":50.27777575039645}]}
+
+codex
+Pixel checks found that the paper tile is yellower than requested and some grit specks fall below the 70% brightness floor. I’m retrying the tiles with tighter colour constraints and giving the scorch corner its third and final attempt.
+
+codex
+The third scorch corner is the best match: its top edge stays lit, and the left burn ends near the upper third. I’m checking the revised tile values and recording any remaining deviations in the manifest.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-2749bf1b-2f44-4a9f-8d0d-cd9c1ac7a25f.png' -Destination 'assets-src/decor/originals/paper-tile.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-800c2b13-9dfa-4b7c-b28f-4e4238d8b8a5.png' -Destination 'assets-src/decor/originals/char-tile.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-27da9a3e-a886-47d4-bc3a-dfebb828d0a0.png' -Destination 'assets-src/decor/originals/grit-tile.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\exec-9b677b04-6122-48db-8d05-cb4d71182a66.png' -Destination 'assets-src/decor/originals/scorch-corner.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 2747ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+
+const sharp = require('sharp');
+(async()=>{for(const id of [\"paper-tile\",\"char-tile\",\"grit-tile\",\"paper-stain\",\"brush-underline-1\",\"brush-underline-2\",\"brush-underline-3\",\"brush-rule\",\"scorch-edge\",\"scorch-corner\"]){const path='assets-src/decor/originals/'+id+'.png'; const m=await sharp(path).metadata(); const s=await sharp(path).stats();console.log(JSON.stringify({id,size:m.width+'x'+m.height,channels:s.channels.map(c=>({min:c.min,max:c.max,mean:Math.round(c.mean*100)/100}))}));}})();
+
+'@ | node" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 7138ms:
+{"id":"paper-tile","size":"1254x1254","channels":[{"min":180,"max":250,"mean":240.15},{"min":152,"max":229,"mean":217},{"min":105,"max":186,"mean":173.07}]}
+{"id":"char-tile","size":"1254x1254","channels":[{"min":19,"max":41,"mean":24.11},{"min":11,"max":29,"mean":16.01},{"min":6,"max":20,"mean":10.26}]}
+{"id":"grit-tile","size":"1254x1254","channels":[{"min":179,"max":255,"mean":253.73},{"min":179,"max":255,"mean":253.66},{"min":179,"max":255,"mean":253.73}]}
+{"id":"paper-stain","size":"1672x941","channels":[{"min":172,"max":255,"mean":250.54},{"min":104,"max":255,"mean":243.38},{"min":53,"max":255,"mean":233.37}]}
+{"id":"brush-underline-1","size":"2172x724","channels":[{"min":0,"max":255,"mean":213.27},{"min":0,"max":255,"mean":213.15},{"min":0,"max":255,"mean":213.23}]}
+{"id":"brush-underline-2","size":"2172x724","channels":[{"min":0,"max":255,"mean":236.6},{"min":0,"max":255,"mean":236.46},{"min":0,"max":255,"mean":236.6}]}
+{"id":"brush-underline-3","size":"2172x724","channels":[{"min":0,"max":255,"mean":242.37},{"min":0,"max":255,"mean":242.22},{"min":0,"max":255,"mean":242.37}]}
+{"id":"brush-rule","size":"1774x887","channels":[{"min":0,"max":255,"mean":243.51},{"min":0,"max":255,"mean":243.34},{"min":0,"max":255,"mean":243.45}]}
+{"id":"scorch-edge","size":"1672x941","channels":[{"min":0,"max":255,"mean":114.07},{"min":0,"max":255,"mean":95.18},{"min":0,"max":255,"mean":68.1}]}
+{"id":"scorch-corner","size":"1672x941","channels":[{"min":0,"max":255,"mean":229.63},{"min":0,"max":255,"mean":201.25},{"min":0,"max":255,"mean":157.75}]}
+
+codex
+The revised grit meets the brightness floor: its darkest channel value is 179/255. Paper and charcoal still miss the requested colour values slightly, so I’m using their final allowed attempts before completing the manifest.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+const sharp=require('sharp');(async()=>{for(const x of [{\"id\":\"paper-tile\",\"attempt\":2,\"path\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-2749bf1b-2f44-4a9f-8d0d-cd9c1ac7a25f.png\"},{\"id\":\"paper-tile\",\"attempt\":3,\"path\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-2a164756-d678-40fd-8719-df9feb390ecf.png\"},{\"id\":\"char-tile\",\"attempt\":2,\"path\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-800c2b13-9dfa-4b7c-b28f-4e4238d8b8a5.png\"},{\"id\":\"char-tile\",\"attempt\":3,\"path\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-d07f0d79-f289-4b7c-b6dc-3f388f9bea28.png\"}]){const s=await sharp(x.path).stats();console.log(JSON.stringify({id:x.id,attempt:x.attempt,channels:s.channels.map(c=>({min:c.min,max:c.max,mean:Math.round(c.mean*100)/100}))}));}})();
+'@ | node" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 4153ms:
+{"id":"paper-tile","attempt":2,"channels":[{"min":180,"max":250,"mean":240.15},{"min":152,"max":229,"mean":217},{"min":105,"max":186,"mean":173.07}]}
+{"id":"paper-tile","attempt":3,"channels":[{"min":202,"max":248,"mean":239.54},{"min":174,"max":227,"mean":216.86},{"min":126,"max":189,"mean":171.78}]}
+{"id":"char-tile","attempt":2,"channels":[{"min":19,"max":41,"mean":24.11},{"min":11,"max":29,"mean":16.01},{"min":6,"max":20,"mean":10.26}]}
+{"id":"char-tile","attempt":3,"channels":[{"min":12,"max":52,"mean":21.86},{"min":9,"max":34,"mean":15.85},{"min":3,"max":25,"mean":10.49}]}
+
+codex
+Generation and review are complete. I’m keeping the second paper and charcoal attempts as the closest matches. Their remaining colour deviations, plus slight RGB variation in the grit and ink backgrounds, will be noted in the manifest. All saved PNGs remain untouched.
+
+apply patch
+patch: completed
+C:\Users\Theo\Desktop\Projects\sered\assets-src\decor\manifest-c1.json
+diff --git a/assets-src/decor/manifest-c1.json b/assets-src/decor/manifest-c1.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..d5d86a8591bf3bcbd04c21e97f00c20df220c57e
+--- /dev/null
++++ b/assets-src/decor/manifest-c1.json
+@@ -0,0 +1,72 @@
++[
++  {
++    "id": "paper-tile",
++    "file": "assets-src/decor/originals/paper-tile.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. SQUARE. Tileable texture: flat top-down scan of aged cream butcher paper. Warm cream base averaging #f0dfbb, subtle long paper fibres, very faint mottled tea-stain blotches in slightly darker tan (#e2c896), a sparse sprinkle of tiny dark grit specks. No folds, creases, tears, burn marks, grease rings, vignette, lighting gradient or shadows. Contrast must stay LOW because black display type sits on it. Uniform all over, edge to edge, no feature that would be noticed when the image repeats. No visible sheet edges or borders. COLOUR CORRECTION IS CRITICAL: the average must be RGB(240,223,187), hex #f0dfbb, a PALE LIGHT CREAM, not yellow parchment, gold, ochre or brown. Almost all pixels should stay very close to this light cream. The faint fibre details must differ only slightly from base. Tea blotches extremely faint and sparse. Only rare tiny grit dots may be darker. Use #f0dfbb as a flat base over the ENTIRE canvas.",
++    "size": "1254x1254",
++    "notes": "Built-in image generation, largest available square requested. Three attempts reviewed; kept attempt 2 as closest colour match with usable uniform low-contrast fibres. Remaining deviation: mean RGB(240.15,217.00,173.07), warmer/yellower than requested #f0dfbb RGB(240,223,187). Untouched original; no colour correction, cropping or seamless tiling performed."
++  },
++  {
++    "id": "char-tile",
++    "file": "assets-src/decor/originals/char-tile.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. SQUARE. Tileable texture: flat top-down scan of a soot-blackened surface, halfway between seasoned cast-iron griddle steel and charred butcher paper. Near-black warm charcoal, #0f0b08 to #241a13 only, averaging #16110d. Very subtle soot mottling, faint smudges, a few hairline scuffs, rare tiny dull rust-orange scorch specks. Extremely low contrast, even lighting, no vignette, no highlights, no grill grates, no distinct spots that would visibly repeat. Uniform edge to edge, no visible sheet edges or borders. No cool greys. COLOUR RANGE IS CRITICAL: target mean RGB(22,17,13). Almost every pixel in range from RGB(15,11,8) to RGB(36,26,19); no bright scratches or orange dots outside this extremely dark range. All microtexture must be barely visible. This is almost a flat warm near-black fill.",
++    "size": "1254x1254",
++    "notes": "Built-in image generation, largest available square requested. Three attempts reviewed; kept attempt 2 for the tighter colour range and subdued texture. Remaining deviation: mean RGB(24.11,16.01,10.26) versus target RGB(22,17,13); channel extrema R19-41/G11-29/B6-20 exceed the specified envelope at a few values. Untouched original; no colour correction or seamless tiling performed."
++  },
++  {
++    "id": "grit-tile",
++    "file": "assets-src/decor/originals/grit-tile.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. SQUARE. Tileable GREYSCALE texture: worn screen-print ink on card stock. Mostly white (values between 70% and 100%, never solid black), with evenly scattered small irregular grey speckles, fine hairline scuffs and a few small worn patches. High frequency only: no large shapes, gradients, vignette or clusters. Fine, faint, low contrast, uniform distribution edge to edge. Pure neutral grayscale specifically required for this asset. No visible sheet edges or borders. BRIGHTNESS FLOOR IS CRITICAL: NO PIXEL DARKER THAN RGB(179,179,179). Every speck and scuff is LIGHT grey, all channels equal, minimum #b3b3b3, never medium grey. Main background pure white #ffffff. Faint marks only, like a very pale 15%-opacity screenprint distress mask. No dark spots anywhere. Keep exactly neutral greyscale.",
++    "size": "1254x1254",
++    "notes": "Built-in image generation, largest available square requested. Two attempts reviewed; kept attempt 2 because attempt 1 had overly dark specks. All channels range 179-255, meeting the 70%-100% brightness floor. Visually neutral greyscale with small generated RGB-channel variation, not mathematically identical RGB values. Very pale fine speckles/scuffs. Untouched original; no grayscale conversion or seamless tiling performed."
++  },
++  {
++    "id": "paper-stain",
++    "file": "assets-src/decor/originals/paper-stain.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. A flat, evenly lit image used later as a MULTIPLY overlay: mostly pure white, with soft warm-sepia aged-paper effects (#c9a676 to #a87a45). A gentle darker toasted coloration along all four canvas edges, strongest at the top-left and top-right corners; three or four very faint irregular tea-stain clouds in the middle third; a few long pale fibre streaks. The centre stays nearly pure white. No tears, fold lines, hard edges, rings or objects. The soft toasted edge coloration is an intrinsic part of this overlay, not a frame or physical sheet border. No shadows, no visible paper edges. Keep the coloration delicate and diffuse.",
++    "size": "1672x941",
++    "notes": "Built-in image generation; attempt 1 accepted after visual review. Untouched original; cropping and background conversion deferred to later processing. Requested largest available landscape. Nearly white centre, diffuse toasted edges and pale fibre streaks; no hard sheet outline."
++  },
++  {
++    "id": "brush-underline-1",
++    "file": "assets-src/decor/originals/brush-underline-1.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. INK MARK, solid pure black ink on pure white, flat scan, no grey wash, no paper texture. A single horizontal dry-brush paint stroke, one fast confident swipe with a wide flat bristle brush. Thick and dense at the left start with a blunt pressed edge, rising slightly (2–4 degrees) to the right, then thinning and breaking into dry bristle streaks and scratchy white gaps at the right tail. Visible bristle texture inside the stroke, ragged edges. No splatter outside the stroke, no drips. The stroke is long and thin (about 10:1 length to maximum thickness), vertically centred, filling about 90% of canvas width with clear white margin all round. Only ONE stroke in the image. All unpainted pixels pure #ffffff.",
++    "size": "2172x724",
++    "notes": "Built-in image generation; attempt 1 accepted after visual review. Untouched original; cropping and background conversion deferred to later processing. Requested largest available landscape. Background visually white with minor generated near-white RGB variation (sampled corners 253-255), rather than every background pixel exactly #ffffff. No post-processing performed."
++  },
++  {
++    "id": "brush-underline-2",
++    "file": "assets-src/decor/originals/brush-underline-2.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. INK MARK, solid pure black ink on pure white, flat scan, no grey wash, no paper texture. A single horizontal dry-brush paint stroke made in one fast confident swipe with a wide flat bristle brush. Dense blunt pressed left start, ragged edges, visible bristle texture and scratchy white gaps in the stroke, dry thinning right tail. This variant is shorter and flatter than a long rising underline, with a slight upward hook ONLY at the right end. Keep the main body nearly level. Long and thin, about 10:1 length to maximum thickness, vertically centred, filling about 80% of width with clear white margin all round. Only ONE stroke. No splatter, no drips. All unpainted pixels pure #ffffff.",
++    "size": "2172x724",
++    "notes": "Built-in image generation; attempt 1 accepted after visual review. Untouched original; cropping and background conversion deferred to later processing. Requested largest available landscape. Background visually white with minor generated near-white RGB variation (sampled corners 253-255), rather than every background pixel exactly #ffffff. No post-processing performed."
++  },
++  {
++    "id": "brush-underline-3",
++    "file": "assets-src/decor/originals/brush-underline-3.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. INK MARK, solid pure black ink on pure white, flat scan, no grey wash, no paper texture. A single horizontal dry-brush paint stroke in one fast confident swipe with a flat bristle brush. Blunt pressed left start, slightly rising 2–4 degrees to the right, ragged edges, visible bristle texture and scratchy white gaps inside. This variant is noticeably THINNER than a broad underline, with a LONGER WISPIER right tail: the last third tapers into delicate dry individual bristle hairs. Long and thin, about 17:1 length to maximum thickness, vertically centred, filling about 90% of width with clear white margin all round. Only ONE stroke in image, no splatter outside stroke, no drips. All unpainted pixels pure #ffffff.",
++    "size": "2172x724",
++    "notes": "Built-in image generation; attempt 1 accepted after visual review. Untouched original; cropping and background conversion deferred to later processing. Requested largest available landscape. Background visually white with minor generated near-white RGB variation (sampled corners 253-255), rather than every background pixel exactly #ffffff. No post-processing performed."
++  },
++  {
++    "id": "brush-rule",
++    "file": "assets-src/decor/originals/brush-rule.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. INK MARK, solid pure black ink on pure white, flat scan, no grey wash, no paper texture. One long, perfectly horizontal hand-inked rule, drawn in one pass with a slightly dry flat marker. Thin (about 40:1 length to thickness), mostly even thickness with subtle wobble, dry broken ends, a few fine white bristle gaps. Vertically centred, spanning about 94% of the width, with clear white margin all round. Only ONE line in the image. No additional strokes, no splatter, no drips. All unpainted pixels pure #ffffff. Critical proportional correction: the black rule must be 40:1, NOT a one-pixel hairline. For a 2048-pixel-wide canvas the line is about 1920 pixels long and 48 pixels THICK. Keep that 48px black body thickness nearly constant from left to right, only the very ends break dry. This is a narrow flat-marker BAND, not a pen line. Keep its length horizontal and centred.",
++    "size": "1774x887",
++    "notes": "Built-in image generation; attempt 2 selected after visual review. Attempt 1 was too thin relative to the requested 40:1 ratio. Untouched original. Requested largest available landscape. Background visually white with minor generated near-white RGB variation (sampled corners 253-255), rather than every background pixel exactly #ffffff. No post-processing performed."
++  },
++  {
++    "id": "scorch-edge",
++    "file": "assets-src/decor/originals/scorch-edge.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. Photorealistic macro of the TOP edge of a sheet of aged cream butcher paper (#f3e3c2), torn by hand and then burnt, shot perfectly straight-on (flat, no perspective, no depth of field), on PURE BLACK #000000. The paper fills the bottom ~50% of the frame and runs off the left, right and bottom edges. The torn, burnt edge runs horizontally across the FULL width at a roughly constant height, with organic, non-repeating bites, lobes and fibre wisps; its amplitude is about 6–10% of image height. Along the edge: a thin band of black char, then a glowing ember rim of deep orange (#ff6a10) with a few small yellow-white hot spots tracing the tear, and a faint orange glow haze bleeding up into the black above, restricted to immediately above the tear. The paper just below the edge is toasted brown and fades back to clean, plain, flat cream within about 12% of the image height. A few tiny ember specks float above the edge. No smoke, no flames taller than a few pixels. Left and right ends of edge at about same height so strip can repeat. Entire upper background beyond narrow glow and sparse embers pure #000000. Bottom paper clean uniform cream, no stains or folds. No distinct complete sheet outline.",
++    "size": "1672x941",
++    "notes": "Built-in image generation; attempt 1 accepted after visual review. Untouched original; cropping, seamless joining and black-background conversion deferred to later processing. Requested largest available landscape. Paper retains natural fine grain and a warmer tint than exact #f3e3c2; upper background corner verified RGB(0,0,0)."
++  },
++  {
++    "id": "scorch-corner",
++    "file": "assets-src/decor/originals/scorch-corner.png",
++    "prompt": "Use case: photorealistic-natural. Production raster decor asset for Seared Vegas. Generate at the largest available size for the requested orientation. Flat scan, no perspective. No text, letters, numbers, logos, watermark, people, hands, food, utensils, frames, grid lines, or drop shadows. Output one image, no contact sheet. LANDSCAPE. Production photographic texture asset of a perfectly FLAT aged cream paper sheet #f3e3c2 seen straight-on, no perspective, isolated against pure #000000. The paper occupies most of the frame, extending off the RIGHT and BOTTOM edges. A narrow black margin is visible along the TOP and LEFT. The TOP-LEFT corner is irregularly burnt. A very THIN bright orange ember rim #ff6a10 with rare tiny yellow-white hot spots must run across the ENTIRE TOP edge to the right canvas boundary. At top-left the glowing rim turns downward along the left edge, extending ONLY to one third of the frame height, then stops. Below y=33% the left edge is entirely unburnt cream against black, with no glowing or dark material. A thin char band and soft toasted brown immediately inside the burned edge fade inward to clean uniform cream over a short distance. Exactly TWO SMALL ROUND burn holes with glowing orange rims near top-left. A FEW tiny ember specks outside the corner. Bottom-right half is plain flat clean cream with only the faintest paper fibres. No smoke, no flames, no curled or raised layers, no folds, no perspective, no depth shadows. Upper black margin remains visible along the entire top edge. Preserve realistic fine torn fibres and micro char detail, keep all paper planar.",
++    "size": "1672x941",
++    "notes": "Built-in image generation, largest available landscape requested. Three attempts reviewed; kept attempt 3, the best match for a glowing full-width top edge, two small burn holes and left glow ending near the upper third. Cream retains natural fine paper grain and a warmer tint than the exact swatch. Untouched original; no cropping, recolouring or background conversion."
++  }
++]
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+
+const fs=require('fs');const crypto=require('crypto');const sharp=require('sharp');
+const sources={\"paper-tile\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-2749bf1b-2f44-4a9f-8d0d-cd9c1ac7a25f.png\",\"char-tile\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-800c2b13-9dfa-4b7c-b28f-4e4238d8b8a5.png\",\"grit-tile\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-27da9a3e-a886-47d4-bc3a-dfebb828d0a0.png\",\"paper-stain\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-bcec710d-e22f-4978-9fad-496798c15b82.png\",\"brush-underline-1\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-c02d892d-9907-48a1-8a6d-8fbe086ccf9b.png\",\"brush-underline-2\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-7982ea64-1899-4292-b2c3-04d74c7fd713.png\",\"brush-underline-3\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-d4efd708-8579-4471-aa7f-e6d4323286a7.png\",\"brush-rule\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-89546e68-1e2d-4e57-8591-724599fde8d2.png\",\"scorch-edge\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-513cd7b5-632d-46e3-ab98-83fee7707f39.png\",\"scorch-corner\":\"C:\\\\Users\\\\Theo\\\\.codex\\\\generated_images\\\\01a1d1af-e11e-7132-8938-8f00b087c6d9\\\\exec-9b677b04-6122-48db-8d05-cb4d71182a66.png\"};
+(async()=>{const entries=JSON.parse(fs.readFileSync('assets-src/decor/manifest-c1.json','utf8'));if(entries.length"'!==10||new Set(entries.map(x=>x.id)).size!==10)throw Error('"'Expected ten unique entries');for(const e of entries){if(Object.keys(e).sort().join(',')"'!=='"'file,id,notes,prompt,size')throw Error('Schema mismatch');const data=fs.readFileSync(e.file);const source=fs.readFileSync(sources[e.id]);if("'!data.equals(source))throw Error('"'Original differs: '+e.id);const m=await sharp(data).metadata();if(m.format"'!=='"'png'||e.size"'!==m.width+'"'x'+m.height)throw Error('Metadata mismatch');console.log(e.file+' | '+e.size+' | unchanged source verified');}console.log('Manifest: 10/10 entries valid; 10/10 untouched PNGs verified.');})().catch(e=>{console.error(e);process.exit(1)});
+
+'@ | node" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 868ms:
+assets-src/decor/originals/paper-tile.png | 1254x1254 | unchanged source verified
+assets-src/decor/originals/char-tile.png | 1254x1254 | unchanged source verified
+assets-src/decor/originals/grit-tile.png | 1254x1254 | unchanged source verified
+assets-src/decor/originals/paper-stain.png | 1672x941 | unchanged source verified
+assets-src/decor/originals/brush-underline-1.png | 2172x724 | unchanged source verified
+assets-src/decor/originals/brush-underline-2.png | 2172x724 | unchanged source verified
+assets-src/decor/originals/brush-underline-3.png | 2172x724 | unchanged source verified
+assets-src/decor/originals/brush-rule.png | 1774x887 | unchanged source verified
+assets-src/decor/originals/scorch-edge.png | 1672x941 | unchanged source verified
+assets-src/decor/originals/scorch-corner.png | 1672x941 | unchanged source verified
+Manifest: 10/10 entries valid; 10/10 untouched PNGs verified.
+
+codex
+Saved and visually reviewed all 10 untouched PNGs in [originals](C:/Users/Theo/Desktop/Projects/sered/assets-src/decor/originals):
+
+- paper-tile.png
+- char-tile.png
+- grit-tile.png
+- paper-stain.png
+- brush-underline-1.png
+- brush-underline-2.png
+- brush-underline-3.png
+- brush-rule.png
+- scorch-edge.png
+- scorch-corner.png
+
+Wrote [manifest-c1.json](C:/Users/Theo/Desktop/Projects/sered/assets-src/decor/manifest-c1.json) with prompts, dimensions, and review notes.
+
+Remaining deviations: paper/char and scorched-paper colours aren’t exact; grit and ink backgrounds retain slight RGB variation. Best attempts retained and documented. Used built-in image generation; no post-processing or code changes.
+tokens used
+74,119
+Saved and visually reviewed all 10 untouched PNGs in [originals](C:/Users/Theo/Desktop/Projects/sered/assets-src/decor/originals):
+
+- paper-tile.png
+- char-tile.png
+- grit-tile.png
+- paper-stain.png
+- brush-underline-1.png
+- brush-underline-2.png
+- brush-underline-3.png
+- brush-rule.png
+- scorch-edge.png
+- scorch-corner.png
+
+Wrote [manifest-c1.json](C:/Users/Theo/Desktop/Projects/sered/assets-src/decor/manifest-c1.json) with prompts, dimensions, and review notes.
+
+Remaining deviations: paper/char and scorched-paper colours aren’t exact; grit and ink backgrounds retain slight RGB variation. Best attempts retained and documented. Used built-in image generation; no post-processing or code changes.

@@ -1,0 +1,954 @@
+Reading additional input from stdin...
+OpenAI Codex v0.166.0
+--------
+workdir: C:\Users\Theo\Desktop\Projects\sered
+model: gpt-6-astra
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR] (network access enabled)
+reasoning effort: high
+reasoning summaries: none
+session id: 01a1d189-cb68-7752-8c86-d0c5c5c7e740
+--------
+user
+Follow the brief below exactly. Working directory is the Seared Vegas website repo.
+
+<stdin>
+# Batch B — Tycoon Cajun tacos and surf & turf protein cutouts
+
+Read `assets-src/briefs/style-guide.md` and look at the mockup image `websiite refrences/landinpagestryle direcctiion.png` before generating anything (the left "Tycoon Tacos" tray is the target taco look). Use your built-in image generation tool. Do not edit any code in this repository; only write files under `assets-src/`.
+
+## Tacos — open black clamshell, checker liner, exactly TWO tacos side by side, same angle and scale for all five
+Every taco: Parmesan-crusted tortilla, sautéed bell pepper strips, red onions, the protein, signature orange-pink Seared sauce drizzle, a little chopped herb. Make the protein clearly identifiable in each.
+
+1. `taco-chicken` — chopped grilled Cajun chicken.
+2. `taco-steak` — diced seared steak, pink centers.
+3. `taco-shrimp` — whole blackened Cajun shrimp (tails off).
+4. `taco-lamb-chop` — sliced grilled lamb chop meat, with one small frenched rib bone poking out of each taco for recognisability.
+5. `taco-lobster-tail` — chunks of buttery red-and-white lobster tail meat.
+
+## Protein cutouts — NO container, the protein alone, transparent background, same three-quarter angle and lighting, centered with margin. These are layered on top of a pasta/rice tray in the UI, so they should look like a portion that has just been lifted off a plate (no plate, no sauce puddle, no garnish outside the food).
+6. `protein-steak` — a fanned row of 5–6 slices of seared steak, medium.
+7. `protein-chicken` — a sliced grilled Cajun chicken breast, slices fanned.
+8. `protein-shrimp` — a cluster of 6–8 blackened Cajun shrimp, tails on.
+9. `protein-salmon` — one blackened Cajun salmon fillet.
+10. `protein-lamb-chop` — two or three crossed grilled frenched lamb chops.
+11. `protein-filet-mignon` — two seared filet mignon medallions, one cut showing pink.
+12. `protein-lobster-tail` — one split broiled lobster tail in its shell, butter glaze.
+
+Write `assets-src/food/manifest-b.json`. When finished, print a short summary listing every file and any asset you could not get right.
+</stdin>
+codex
+I’ll read the style guide and inspect the taco reference, then use the imagegen skill to create the 12 assets and manifest under `assets-src/`.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'C:\\Users\\Theo\\.codex\\skills\\.system\\imagegen\\SKILL.md'; Get-Content -LiteralPath 'assets-src/briefs/style-guide.md'; Get-ChildItem -LiteralPath 'assets-src/food' -ErrorAction SilentlyContinue; git status --short" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1890ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas."
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural â€” candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup â€” product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup â€” app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram â€” diagrams/infographics with structured layout and text.
+- scientific-educational â€” classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing â€” campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual â€” slide, chart, workflow, and data-heavy business visuals.
+- logo-brand â€” logo/mark exploration, vector-friendly.
+- illustration-story â€” comics, childrenâ€™s book art, narrative scenes.
+- stylized-concept â€” style-driven concept art, 3D/stylized renders.
+- historical-scene â€” period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization â€” translate/replace in-image text, preserve layout.
+- identity-preserve â€” try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit â€” remove/replace a specific element (including interior swaps).
+- lighting-weather â€” time-of-day/season/atmosphere changes only.
+- background-extraction â€” transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer â€” apply reference style while changing subject/scene.
+- compositing â€” multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render â€” drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+# Seared Vegas â€” food asset style guide (shared by every generation batch)
+
+Reference mockup: `websiite refrences/landinpagestryle direcctiion.png` (look at it first: the hero tray and the three category trays are the target look).
+
+## Every asset
+- Photorealistic, warm, appetizing food photography. Warm key light from upper left, soft fill, gentle specular highlights on sauces. Rich but natural color.
+- Camera: consistent elevated three-quarter view (about 35â€“40Â° above the table, looking down at the front-left corner of the container). Same angle across the whole set.
+- Container (when the asset has one): an open, matte-black hinged foam/plastic takeout clamshell. The lid is open and standing up behind the base, hinge at the back. Clean, symmetrical, not warped, no extra lids, no text or logos on it.
+- Black-and-cream checkerboard paper liner tucked into the container where noted, with the checker edges peeking over the rim.
+- The ENTIRE container (including the open lid) must be inside the frame with clear margin on all sides. Nothing cropped.
+- Transparent background (PNG with alpha). No table, no counter, no backdrop, no cast shadow on a floor â€” the website adds shadows. A faint contact shadow directly under the container is NOT wanted either; keep the alpha clean.
+- Square canvas, 1024Ã—1024 (or the tool's largest square), container centered, filling roughly 80% of the width.
+- No text, letters, labels, watermarks or logos anywhere. No flames, smoke columns or food on fire. No utensils, no hands, no garnish piles outside the container.
+- Realistic portions for a food truck plate. No duplicated/merged/malformed ingredients (count the tacos, count the chops).
+
+## Ingredient facts (from the owner's menu)
+- Tycoon Cajun Tacos: each order is TWO tacos. Parmesan-crusted tortilla (golden, crispy cheese crust visible on the tortilla edge), sautÃ©ed bell peppers (red/green/yellow strips), red onions, the protein, finished with a creamy orange-pink "Seared" signature sauce drizzle and a little chopped cilantro/parsley.
+- Large plates: protein served over a base. Bases: Cajun Alfredo penne (creamy, orange-flecked Cajun cream sauce, parsley) / seasoned yellow rice / half pasta + half rice.
+- Loaded Cajun corn: corn on the cob (2â€“3 cobs or cob halves), grilled with char marks, slathered with Cajun butter/crema, grated parmesan/cotija, Cajun seasoning dust, sauce drizzle, chopped parsley.
+
+## Output
+- Save the final transparent PNG to `assets-src/food/<id>.png` (exact ids listed in your batch).
+- If the image tool cannot output real transparency, generate on a perfectly flat, plain light-grey (#d9d9d9) studio background and then remove the background yourself (e.g. `pip install "rembg[cpu]"` and run it with the `isnet-general-use` or `u2net` model, or another reliable method) so the saved PNG has real alpha. Keep the un-cut original as `assets-src/food/originals/<id>.png`.
+- Verify each saved PNG with Python/Pillow: mode RGBA, corners fully transparent, container not clipped by the canvas edge (alpha bbox has margin on all sides). Regenerate anything that fails or looks wrong (wrong protein, malformed container, cropped lid, text artifacts, three tacos, etc.).
+- Append one entry per asset to `assets-src/food/manifest-<batch>.json`: `{ "id", "file", "prompt", "notes" }`.
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+?? .claude/
+?? assets-src/
+?? public/brand/
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -LiteralPath 'assets-src' -Recurse -File | Select-Object FullName; python -c \"import PIL; print(PIL.__version__)\"" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 1116ms:
+
+FullName                                                                            
+--------                                                                            
+C:\Users\Theo\Desktop\Projects\sered\assets-src\brand\logo-extracted-from-mockup.png
+C:\Users\Theo\Desktop\Projects\sered\assets-src\briefs\batch-a.log                  
+C:\Users\Theo\Desktop\Projects\sered\assets-src\briefs\batch-a.md                   
+C:\Users\Theo\Desktop\Projects\sered\assets-src\briefs\batch-b.log                  
+C:\Users\Theo\Desktop\Projects\sered\assets-src\briefs\batch-b.md                   
+C:\Users\Theo\Desktop\Projects\sered\assets-src\briefs\style-guide.md               
+Program 'python.exe' failed to run: The file cannot be accessed by the systemAt line:2 char:82
++ ... elect-Object FullName; python -c "import PIL; print(PIL.__version__)"
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+At line:2 char:82
++ ... elect-Object FullName; python -c "import PIL; print(PIL.__version__)"
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ResourceUnavailable: (:) [], ApplicationFailedException
+    + FullyQualifiedErrorId : NativeCommandFailed
+ 
+
+
+
+codex
+The reference uses two upright tacos in a compact black tray, with the checker liner visible around them. I’m using that composition for all five taco variants and matching the warm upper-left lighting for the protein cutouts.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Command py,python3,uv -ErrorAction SilentlyContinue | Select-Object Name,Source; Get-ChildItem -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 3 Name,LastWriteTime; Get-ChildItem -Path 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python' -ErrorAction SilentlyContinue | Select-Object FullName" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 513ms:
+
+Name                                 Source                                                       
+----                                 ------                                                       
+py.exe                               C:\Users\Theo\AppData\Local\Programs\Python\Launcher\py.exe  
+python3.exe                          C:\Users\Theo\AppData\Local\Microsoft\WindowsApps\python3.exe
+01a1d189-cb68-7752-8c86-d0c5c5c7e740                                                              
+01a1d189-cb68-7481-aabe-3abeb5ace42b                                                              
+01a1cc54-e9ae-7e70-b8d7-386035038174                                                              
+                                                                                                  
+                                                                                                  
+                                                                                                  
+                                                                                                  
+
+
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "py -0p; Get-ChildItem -LiteralPath 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python' -Directory -ErrorAction SilentlyContinue | ForEach-Object { "'$_.FullName }' in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 300ms:
+No installed Pythons found!
+C:\Users\Theo\AppData\Local\Programs\Python\Launcher
+C:\Users\Theo\AppData\Local\Programs\Python\Python312
+C:\Users\Theo\AppData\Local\Programs\Python\Python313
+C:\Users\Theo\AppData\Local\Programs\Python\Python314
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "& 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python312\\python.exe' -c \"import PIL; print(PIL.__version__)\"" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 221ms:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'PIL'
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "& 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python313\\python.exe' -c \"import PIL; print(PIL.__version__)\"; & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -c \"import PIL; print(PIL.__version__)\"" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 260ms:
+& : The term 'C:\Users\Theo\AppData\Local\Programs\Python\Python313\python.exe' is not recognized as the name of a 
+cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify 
+that the path is correct and try again.
+At line:2 char:3
++ & 'C:\Users\Theo\AppData\Local\Programs\Python\Python313\python.exe'  ...
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\Theo\A...n313\python.exe:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+12.3.0
+
+codex
+The chicken tray has the required two tacos and visible Parmesan crust. I’ve adjusted its framing to leave clear space around the lid; I’ll use this image as the reference for the other four fillings.
+
+codex
+The steak and shrimp variants retain the same tray framing. The steak shows pink centers, and the taco shrimp are tail-off as requested. The lamb and lobster variants are still generating.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "New-Item -ItemType Directory -Path 'assets-src/food' -Force | Out-Null" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 194ms:
+codex
+The first protein cutouts are generated: six steak slices, a fanned chicken breast, and seven tail-on shrimp. The shrimp cluster sits too close to the right edge, so I’m correcting its framing.
+
+codex
+All 12 subjects are generated. The lamb cutout has two crossed chops, the filet has two medallions with one pink cut face, and the lobster tail remains in its shell. I’m finishing the shrimp framing correction, then checking transparency and margins with Pillow.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "if (Test-Path -LiteralPath 'assets-src/food/taco-chicken.png') { throw 'Asset already exists: taco-chicken' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-73a5b9e1-3d36-445f-b166-a92947fafe95.png' -Destination 'assets-src/food/taco-chicken.png'
+if (Test-Path -LiteralPath 'assets-src/food/taco-steak.png') { throw 'Asset already exists: taco-steak' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-4407aed8-818d-4c52-8153-70677a626692.png' -Destination 'assets-src/food/taco-steak.png'
+if (Test-Path -LiteralPath 'assets-src/food/taco-shrimp.png') { throw 'Asset already exists: taco-shrimp' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-74de8839-8018-49eb-bb93-3aefa7b9d85e.png' -Destination 'assets-src/food/taco-shrimp.png'
+if (Test-Path -LiteralPath 'assets-src/food/taco-lamb-chop.png') { throw 'Asset already exists: taco-lamb-chop' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-0f1444d7-8fd4-4443-bfca-e94a9f25f510.png' -Destination 'assets-src/food/taco-lamb-chop.png'
+if (Test-Path -LiteralPath 'assets-src/food/taco-lobster-tail.png') { throw 'Asset already exists: taco-lobster-tail' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-e3da8952-e3ef-4774-add7-cdddecf722b7.png' -Destination 'assets-src/food/taco-lobster-tail.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-steak.png') { throw 'Asset already exists: protein-steak' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-01d20f67-d883-4037-b693-f12b8b49f427.png' -Destination 'assets-src/food/protein-steak.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-chicken.png') { throw 'Asset already exists: protein-chicken' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-4131dc52-57cf-4974-b9bf-293220ec25da.png' -Destination 'assets-src/food/protein-chicken.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-shrimp.png') { throw 'Asset already exists: protein-shrimp' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-404da522-d22d-477e-aeba-17073c20cc5b.png' -Destination 'assets-src/food/protein-shrimp.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-salmon.png') { throw 'Asset already exists: protein-salmon' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-be813092-32ec-4c75-bb43-934b3467dd38.png' -Destination 'assets-src/food/protein-salmon.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-lamb-chop.png') { throw 'Asset already exists: protein-lamb-chop' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-45d9db3a-4294-4554-9979-e77cd390f39c.png' -Destination 'assets-src/food/protein-lamb-chop.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-filet-mignon.png') { throw 'Asset already exists: protein-filet-mignon' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-689eea52-3e31-46a6-a6d8-ad675fdf03ee.png' -Destination 'assets-src/food/protein-filet-mignon.png'
+if (Test-Path -LiteralPath 'assets-src/food/protein-lobster-tail.png') { throw 'Asset already exists: protein-lobster-tail' }
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-1a514743-c0e2-42b8-93e7-ad850eb8e855.png' -Destination 'assets-src/food/protein-lobster-tail.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 409ms:
+apply patch
+patch: completed
+C:\Users\Theo\Desktop\Projects\sered\assets-src\food\manifest-b.json
+diff --git a/assets-src/food/manifest-b.json b/assets-src/food/manifest-b.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..a01ef3ec125726350992cefb8839cd53a6f24cee
+--- /dev/null
++++ b/assets-src/food/manifest-b.json
+@@ -0,0 +1,74 @@
++[
++  {
++    "id": "taco-chicken",
++    "file": "assets-src/food/taco-chicken.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas food-truck menu cutout, exactly TWO tacos side by side in one open matte-black hinged takeout clamshell, lid standing upright behind base, hinge at back. Each taco is an upright folded golden tortilla with visible crispy Parmesan cheese crust, sauteed red/green/yellow bell pepper strips and red onion, the specified protein prominently visible, restrained creamy orange-pink signature Seared sauce drizzle and a little finely chopped herb. Match the left Tycoon Tacos tray in the previously inspected mockup: two parallel taco openings running from front-left toward back-right, hearty but realistic portions, black-and-cream checker paper tucked into base with edges peeking above rim, clean symmetric whole container. Camera elevated three-quarter 38 degrees, looking down at front-left corner; warm key light upper left, soft fill, natural rich colors, moist food textures. Square 1024x1024, entire container and lid centered, width approximately 80% of canvas, generous clear margin on all sides. True transparent background with clean alpha, no floor/contact shadow, no table/backdrop, text/logo/watermark, utensils/hands, fire/smoke, loose food or garnish outside container. EXACTLY TWO TACOS, clearly distinct. Protein: chopped grilled Cajun chicken, white tender interiors and blackened golden-brown exteriors, clearly identifiable generous chicken chunks in BOTH tacos. Create only this one asset: taco-chicken. Framing revision: Edit the attached taco-chicken image only to fix framing: pull the camera back so the complete container INCLUDING upright lid fits centered within the square canvas with at least 10 percent empty transparent margin at TOP, bottom, left and right. Entire object width about 80 percent. Preserve the exact two chicken tacos, food, tray, checker liner, angle, warm lighting and photorealistic texture. Real transparent background, no floor or contact shadow. No other changes.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "taco-steak",
++    "file": "assets-src/food/taco-steak.png",
++    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to diced seared steak with a dark browned crust and clearly visible juicy pink medium centers on the cubes. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-steak.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "taco-shrimp",
++    "file": "assets-src/food/taco-shrimp.png",
++    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to whole curved blackened Cajun shrimp, peeled and TAILS OFF, recognizable plump segmented shrimp bodies with reddish edges and Cajun spice crust. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-shrimp.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "taco-lamb-chop",
++    "file": "assets-src/food/taco-lamb-chop.png",
++    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to sliced grilled lamb chop meat with rosy interiors and browned exterior, plus exactly ONE small clean frenched lamb rib bone poking out of EACH taco, TWO bones total. Meat is sliced lamb, not whole large chops. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-lamb-chop.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "taco-lobster-tail",
++    "file": "assets-src/food/taco-lobster-tail.png",
++    "prompt": "Use case: precise-object-edit. Input image is the approved taco-chicken composition reference. Change ONLY the protein in BOTH tacos to generous chunks of buttery red-and-white lobster TAIL meat, plump pearly white flesh with coral-red outer edges, clearly recognizable lobster meat, NO shell, claws, shrimp or bones. Preserve exactly TWO side-by-side tacos, crispy Parmesan-crusted tortillas, sauteed red/green/yellow bell pepper strips, red onion, creamy orange-pink Seared sauce drizzle and little chopped herb. Remove all chicken. Preserve the exact camera view, object scale, tray location, symmetrical matte-black hinged clamshell, single upright lid, black-and-cream checker liner, square canvas dimensions, clear transparent margins on ALL sides, warm upper-left light and photoreal texture. Keep protein identifiable, do not bury it under sauce. Transparent alpha background, no floor/contact shadow, no extra objects or text. Output one asset: taco-lobster-tail.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-steak",
++    "file": "assets-src/food/protein-steak.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: Exactly SIX medium seared steak slices arranged in one compact fanned row diagonally from lower-left foreground toward upper-right back. All six cuts visible, juicy warm pink centers, dark browned crust with restrained Cajun seasoning. Natural steak anatomy, realistic food-truck portion. Output one asset: protein-steak.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-chicken",
++    "file": "assets-src/food/protein-chicken.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: ONE grilled Cajun chicken breast sliced crosswise into six thick pieces and fanned into a compact diagonal row from lower-left foreground toward upper-right back. Moist fully cooked white interiors visible, golden-brown blackened Cajun crust and authentic grill marks. Output one asset: protein-chicken.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-shrimp",
++    "file": "assets-src/food/protein-shrimp.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: Exactly SEVEN whole blackened Cajun shrimp in one compact natural cluster, each with one attached tail fan, TAILS ON, peeled bodies, plump curled segmented flesh, reddish orange edges and dark toasted Cajun spices. Individually readable natural shrimp anatomy, seven bodies and seven tails, not a circular ring. Output one asset: protein-shrimp. Framing revision: Edit ONLY the framing of this existing protein-shrimp cutout. Preserve all SEVEN blackened Cajun shrimp with tails on, the exact cluster arrangement, food texture, camera angle and warm upper-left lighting. Reduce the whole cluster to occupy 75 percent of square canvas width, centered. All seven complete shrimp and every complete tail must be inside the image with at least 12 percent empty transparent margin on left and right, generous top/bottom clearance. Do not crop. Genuine transparent background, no container, plate, shadow or extra objects.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-salmon",
++    "file": "assets-src/food/protein-salmon.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: Exactly ONE blackened Cajun salmon fillet, thick moist coral-orange side showing natural flaky layers, dark spice-crusted top, diagonal long axis lower-left toward upper-right. No slices or additional portions. IMPORTANT pull camera back: every part including bones or tail must have at least 10 percent canvas empty transparent clearance from every edge; no clipping. Output one asset: protein-salmon.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-lamb-chop",
++    "file": "assets-src/food/protein-lamb-chop.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: Exactly TWO grilled frenched lamb rib chops crossed naturally with their clean slender rib bones crossing in an X; two distinct browned meat eyes, each attached to exactly one rib bone, lightly charred grill marks and juicy meat. Both complete bones and both meat pieces entirely visible. No extra bones. IMPORTANT pull camera back: every part including bones or tail must have at least 10 percent canvas empty transparent clearance from every edge; no clipping. Output one asset: protein-lamb-chop.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-filet-mignon",
++    "file": "assets-src/food/protein-filet-mignon.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: Exactly TWO thick round seared filet mignon medallions, one intact in back and one in front with a clean cut face revealing its juicy medium pink center. The cut portion remains against its medallion; two portions total, not three. Deep mahogany seared crust, tender finely grained beef. IMPORTANT pull camera back: every part including bones or tail must have at least 10 percent canvas empty transparent clearance from every edge; no clipping. Output one asset: protein-filet-mignon.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  },
++  {
++    "id": "protein-lobster-tail",
++    "file": "assets-src/food/protein-lobster-tail.png",
++    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas surf & turf protein cutout for layering over pasta/rice in a website. PROTEIN ALONE, portion just lifted off a plate, with clean natural bottom edge. Camera fixed elevated three-quarter view 38 degrees above table height, looking from front-left, warm key light from upper left and soft fill, gentle glossy highlights, rich natural color and crisp realistic food texture. Square 1024x1024 canvas or largest square, whole portion centered approximately 75 percent width with generous transparent margins on ALL sides. Genuine transparent background, no plate, container, liner, board, table, floor, cast/contact shadow, sauce puddle, garnish outside food, loose crumbs, text, logos, hands or utensils. No sides, rice, pasta, vegetables, lemon, sauce drizzle or herb garnish. Subject: Exactly ONE split broiled lobster tail in its scarlet red shell, shell split down the top lengthwise to expose plump white lobster meat with lightly golden broiled edges and glossy butter glaze adhering to food. One natural tail fan, no claws, head or legs. Long axis lower-left toward upper-right. No butter puddle or garnish. IMPORTANT pull camera back: every part including bones or tail must have at least 10 percent canvas empty transparent clearance from every edge; no clipping. Output one asset: protein-lobster-tail.",
++    "notes": "Generated with built-in image_gen; visually reviewed."
++  }
++]
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json
+from pathlib import Path
+from PIL import Image
+manifest = Path('assets-src/food/manifest-b.json')
+entries = json.loads(manifest.read_text(encoding='utf-8'))
+for e in entries:
+    with Image.open(e['file']) as im:
+        assert im.mode == 'RGBA', (e['id'], im.mode)
+        w, h = im.size
+        assert w == h
+        a = im.getchannel('A')
+        corners = [a.getpixel(p) for p in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)]]
+        assert corners == [0]*4, (e['id'], corners)
+        bbox = a.getbbox()
+        margin = [bbox[0],bbox[1],w-bbox[2],h-bbox[3]]
+        assert min(margin) > 0, (e['id'], bbox)
+        e['notes'] += f' Pillow verified: {w}x{h} RGBA; all four corners fully transparent; alpha bbox {bbox}; margins left/top/right/bottom {margin} px. No background removal required.'
+        print(e['id'], im.size, im.mode, 'margins', margin)
+manifest.write_text(json.dumps(entries, indent=2) + '\\n', encoding='utf-8')
+print('PASS: all 12 PNGs validated')
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -
+git status --short" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1648ms:
+taco-chicken (1254, 1254) RGBA margins [174, 139, 210, 124]
+taco-steak (1254, 1254) RGBA margins [172, 137, 209, 122]
+taco-shrimp (1254, 1254) RGBA margins [172, 137, 209, 123]
+taco-lamb-chop (1254, 1254) RGBA margins [171, 137, 209, 122]
+Traceback (most recent call last):
+  File "<stdin>", line 7, in <module>
+  File "C:\Users\Theo\AppData\Local\Programs\Python\Python314\Lib\site-packages\PIL\Image.py", line 3715, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file 'assets-src/food/taco-lobster-tail.png'
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Theo/.config/git/ignore': Permission denied
+ M src/app/layout.tsx
+ M src/app/page.tsx
+?? .claude/
+?? assets-src/
+?? public/brand/
+?? public/food/
+?? scripts/
+?? src/components/
+?? src/config/
+?? src/data/
+?? src/lib/
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from pathlib import Path
+from PIL import Image
+for p in Path('assets-src/food').glob('*.png'):
+    try:
+        im=Image.open(p); im.load(); print(p.name,p.stat().st_size,im.size,im.mode)
+    except Exception as e:
+        print(p.name,p.stat().st_size,p.read_bytes()[:150],str(e))
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 3761ms:
+base-half-half.png 1431028 (1254, 1254) RGBA
+base-penne.png 1525307 (1254, 1254) RGBA
+base-rice.png 1430109 (1254, 1254) RGBA
+corn-loaded-cajun.png 1801250 (1254, 1254) RGBA
+hero-tray.png 1672567 (1254, 1254) RGBA
+plate-chicken.png 1577545 (1254, 1254) RGBA
+plate-filet-mignon.png 1685704 (1254, 1254) RGBA
+plate-lamb-chop.png 1658337 (1254, 1254) RGBA
+plate-salmon.png 1758127 (1254, 1254) RGBA
+plate-shrimp.png 1659328 (1254, 1254) RGBA
+plate-steak.png 1767795 (1254, 1254) RGBA
+protein-chicken.png 1846786 (1254, 1254) RGBA
+protein-filet-mignon.png 1649135 (1254, 1254) RGBA
+protein-lamb-chop.png 1441823 (1254, 1254) RGBA
+protein-lobster-tail.png 1052665 (1254, 1254) RGBA
+protein-salmon.png 1150496 (1254, 1254) RGBA
+protein-shrimp.png 1406331 (1254, 1254) RGBA
+protein-steak.png 1642093 (1254, 1254) RGBA
+taco-chicken.png 1461169 (1254, 1254) RGBA
+taco-lamb-chop.png 1469287 (1254, 1254) RGBA
+taco-lobster-tail.png 1408338 (1254, 1254) RGBA
+taco-shrimp.png 1435249 (1254, 1254) RGBA
+taco-steak.png 1456498 (1254, 1254) RGBA
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json
+from pathlib import Path
+from PIL import Image
+manifest=Path('assets-src/food/manifest-b.json')
+entries=json.loads(manifest.read_text(encoding='utf-8'))
+assert len(entries)==12
+for e in entries:
+    with Image.open(e['file']) as im:
+        im.load()
+        assert im.mode=='RGBA'
+        w,h=im.size
+        assert w==h
+        a=im.getchannel('A')
+        assert all(a.getpixel(p)==0 for p in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)])
+        bbox=a.getbbox()
+        margins=[bbox[0],bbox[1],w-bbox[2],h-bbox[3]]
+        assert min(margins)>0
+        e['notes']=f'Generated with built-in image_gen; visually reviewed. Pillow verified: {w}x{h} RGBA; all four corners fully transparent; alpha bbox {bbox}; margins left/top/right/bottom {margins} px. No background removal required.'
+        print(e['id'], 'PASS', im.size, 'margins',margins)
+manifest.write_text(json.dumps(entries,indent=2)+'\\n',encoding='utf-8')
+print('PASS: 12 images and manifest')
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 580ms:
+Traceback (most recent call last):
+  File "<stdin>", line 17, in <module>
+AssertionError
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json
+from PIL import Image
+for e in json.load(open('assets-src/food/manifest-b.json')):
+    im=Image.open(e['file']); a=im.getchannel('A'); print(e['id'],im.size,im.mode,a.getbbox(),[a.getpixel(p) for p in [(0,0),(im.width-1,0),(0,im.height-1),(im.width-1,im.height-1)]])
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 1102ms:
+taco-chicken (1254, 1254) RGBA (0, 9, 1215, 1254) [0, 0, 0, 0]
+taco-steak (1254, 1254) RGBA (0, 5, 1047, 1254) [0, 0, 0, 0]
+taco-shrimp (1254, 1254) RGBA (0, 19, 1176, 1254) [0, 0, 0, 0]
+taco-lamb-chop (1254, 1254) RGBA (0, 59, 1178, 1254) [0, 0, 0, 0]
+taco-lobster-tail (1254, 1254) RGBA (0, 0, 1230, 1254) [0, 0, 0, 0]
+protein-steak (1254, 1254) RGBA (25, 19, 1253, 1254) [0, 0, 0, 0]
+protein-chicken (1254, 1254) RGBA (0, 19, 1240, 1254) [0, 0, 0, 0]
+protein-shrimp (1254, 1254) RGBA (41, 29, 1208, 1216) [0, 0, 0, 0]
+protein-salmon (1254, 1254) RGBA (33, 85, 1218, 1219) [0, 0, 0, 0]
+protein-lamb-chop (1254, 1254) RGBA (0, 13, 1240, 1254) [0, 0, 0, 0]
+protein-filet-mignon (1254, 1254) RGBA (0, 0, 1216, 1254) [0, 0, 0, 0]
+protein-lobster-tail (1254, 1254) RGBA (0, 9, 1240, 1254) [0, 0, 0, 0]
+
+codex
+Another process appears to be rewriting assets in the shared folder: files that passed the margin check changed before the next check. I’m restoring this batch’s selected outputs and validating them again.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-73a5b9e1-3d36-445f-b166-a92947fafe95.png' -Destination 'assets-src/food/taco-chicken.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-4407aed8-818d-4c52-8153-70677a626692.png' -Destination 'assets-src/food/taco-steak.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-74de8839-8018-49eb-bb93-3aefa7b9d85e.png' -Destination 'assets-src/food/taco-shrimp.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-0f1444d7-8fd4-4443-bfca-e94a9f25f510.png' -Destination 'assets-src/food/taco-lamb-chop.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-e3da8952-e3ef-4774-add7-cdddecf722b7.png' -Destination 'assets-src/food/taco-lobster-tail.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-01d20f67-d883-4037-b693-f12b8b49f427.png' -Destination 'assets-src/food/protein-steak.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-4131dc52-57cf-4974-b9bf-293220ec25da.png' -Destination 'assets-src/food/protein-chicken.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-404da522-d22d-477e-aeba-17073c20cc5b.png' -Destination 'assets-src/food/protein-shrimp.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-be813092-32ec-4c75-bb43-934b3467dd38.png' -Destination 'assets-src/food/protein-salmon.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-45d9db3a-4294-4554-9979-e77cd390f39c.png' -Destination 'assets-src/food/protein-lamb-chop.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-689eea52-3e31-46a6-a6d8-ad675fdf03ee.png' -Destination 'assets-src/food/protein-filet-mignon.png'
+Copy-Item -LiteralPath 'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-1a514743-c0e2-42b8-93e7-ad850eb8e855.png' -Destination 'assets-src/food/protein-lobster-tail.png'" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 219ms:
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json
+from pathlib import Path
+from PIL import Image
+manifest=Path('assets-src/food/manifest-b.json')
+entries=json.loads(manifest.read_text(encoding='utf-8'))
+assert len(entries)==12
+for e in entries:
+    with Image.open(e['file']) as im:
+        im.load()
+        assert im.mode=='RGBA'
+        w,h=im.size
+        assert w==h
+        a=im.getchannel('A')
+        assert all(a.getpixel(p)==0 for p in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)])
+        bbox=a.getbbox()
+        margins=[bbox[0],bbox[1],w-bbox[2],h-bbox[3]]
+        assert min(margins)>0, (e['id'],margins)
+        e['notes']=f'Generated with built-in image_gen; visually reviewed. Pillow verified: {w}x{h} RGBA; all four corners fully transparent; alpha bbox {bbox}; margins left/top/right/bottom {margins} px. No background removal required.'
+        print(e['id'], 'PASS', im.size, 'margins',margins)
+manifest.write_text(json.dumps(entries,indent=2)+'\\n',encoding='utf-8')
+print('PASS: 12 images and manifest')
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 653ms:
+Traceback (most recent call last):
+  File "<stdin>", line 17, in <module>
+AssertionError: ('taco-chicken', [0, 9, 39, 0])
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Item -LiteralPath 'assets-src/food/taco-chicken.png' | Select-Object Length,LastWriteTime; Get-Content -LiteralPath 'assets-src/food/manifest-b.json' -TotalCount 8" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 294ms:
+
+ Length LastWriteTime         
+ ------ -------------         
+1461169 11/12/2026 12:57:16 PM
+[
+  {
+    "id": "taco-chicken",
+    "file": "assets-src/food/taco-chicken.png",
+    "prompt": "Use case: product-mockup. Photorealistic warm appetizing Seared Vegas food-truck menu cutout, exactly TWO tacos side by side in one open matte-black hinged takeout clamshell, lid standing upright behind base, hinge at back. Each taco is an upright folded golden tortilla with visible crispy Parmesan cheese crust, sauteed red/green/yellow bell pepper strips and red onion, the specified protein prominently visible, restrained creamy orange-pink signature Seared sauce drizzle and a little finely chopped herb. Match the left Tycoon Tacos tray in the previously inspected mockup: two parallel taco openings running from front-left toward back-right, hearty but realistic portions, black-and-cream checker paper tucked into base with edges peeking above rim, clean symmetric whole container. Camera elevated three-quarter 38 degrees, looking down at front-left corner; warm key light upper left, soft fill, natural rich colors, moist food textures. Square 1024x1024, entire container and lid centered, width approximately 80% of canvas, generous clear margin on all sides. True transparent background with clean alpha, no floor/contact shadow, no table/backdrop, text/logo/watermark, utensils/hands, fire/smoke, loose food or garnish outside container. EXACTLY TWO TACOS, clearly distinct. Protein: chopped grilled Cajun chicken, white tender interiors and blackened golden-brown exteriors, clearly identifiable generous chicken chunks in BOTH tacos. Create only this one asset: taco-chicken. Framing revision: Edit the attached taco-chicken image only to fix framing: pull the camera back so the complete container INCLUDING upright lid fits centered within the square canvas with at least 10 percent empty transparent margin at TOP, bottom, left and right. Entire object width about 80 percent. Preserve the exact two chicken tacos, food, tray, checker liner, angle, warm lighting and photorealistic texture. Real transparent background, no floor or contact shadow. No other changes.",
+    "notes": "Generated with built-in image_gen; visually reviewed."
+  },
+  {
+
+
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+from PIL import Image
+from pathlib import Path
+import hashlib
+paths=[Path(r'C:\\Users\\Theo\\.codex\\generated_images\\01a1d189-cb68-7752-8c86-d0c5c5c7e740\\exec-73a5b9e1-3d36-445f-b166-a92947fafe95.png'),Path('assets-src/food/taco-chicken.png')]
+for p in paths:
+    im=Image.open(p); a=im.getchannel('A');print(str(p),hashlib.sha256(p.read_bytes()).hexdigest(),a.getbbox(),a.point(lambda x:255 if x>10 else 0).getbbox())
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 687ms:
+C:\Users\Theo\.codex\generated_images\01a1d189-cb68-7752-8c86-d0c5c5c7e740\exec-73a5b9e1-3d36-445f-b166-a92947fafe95.png 2e4fc95defc3421cedfaafb5a91451a41fe054bdd52c57b5e41be453bbcfebc7 (0, 9, 1215, 1254) (174, 139, 1044, 1130)
+assets-src\food\taco-chicken.png 2e4fc95defc3421cedfaafb5a91451a41fe054bdd52c57b5e41be453bbcfebc7 (0, 9, 1215, 1254) (174, 139, 1044, 1130)
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json
+from PIL import Image
+for e in json.load(open('assets-src/food/manifest-b.json')):
+    im=Image.open(e['file']); a=im.getchannel('A'); print(e['id'], 'raw', a.getbbox(), 'alpha>10', a.point(lambda x:255 if x>10 else 0).getbbox())
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 768ms:
+taco-chicken raw (0, 9, 1215, 1254) alpha>10 (174, 139, 1044, 1130)
+taco-steak raw (0, 5, 1047, 1254) alpha>10 (172, 137, 1044, 1132)
+taco-shrimp raw (0, 19, 1176, 1254) alpha>10 (172, 137, 1045, 1131)
+taco-lamb-chop raw (0, 59, 1178, 1254) alpha>10 (171, 137, 1045, 1132)
+taco-lobster-tail raw (0, 0, 1230, 1254) alpha>10 (173, 136, 1045, 1130)
+protein-steak raw (25, 19, 1253, 1254) alpha>10 (61, 240, 1194, 1104)
+protein-chicken raw (0, 19, 1240, 1254) alpha>10 (67, 111, 1185, 1156)
+protein-shrimp raw (41, 29, 1208, 1216) alpha>10 (151, 210, 1099, 1019)
+protein-salmon raw (33, 85, 1218, 1219) alpha>10 (77, 295, 1180, 991)
+protein-lamb-chop raw (0, 13, 1240, 1254) alpha>10 (94, 157, 1160, 1096)
+protein-filet-mignon raw (0, 0, 1216, 1254) alpha>10 (128, 173, 1162, 1073)
+protein-lobster-tail raw (0, 9, 1240, 1254) alpha>10 (105, 232, 1141, 1060)
+
+codex
+I traced the remaining margin failures to nearly invisible alpha noise in the generated source PNGs, rather than cropped food. I’ll clear those stray pixels and retain the originals under `assets-src/food/originals/`.
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json, shutil
+from pathlib import Path
+from PIL import Image
+manifest=Path('assets-src/food/manifest-b.json')
+entries=json.loads(manifest.read_text(encoding='utf-8'))
+originals=Path('assets-src/food/originals')
+originals.mkdir(exist_ok=True)
+for e in entries:
+    p=Path(e['file'])
+    original=originals/p.name
+    if original.exists():
+        raise RuntimeError('Original already exists: '+str(original))
+    shutil.copy2(p,original)
+    with Image.open(p) as im:
+        im.load()
+        im.putalpha(im.getchannel('A').point(lambda x: 0 if x<=10 else x))
+        im.save(p)
+    with Image.open(p) as im:
+        w,h=im.size
+        assert im.mode=='RGBA' and w==h
+        a=im.getchannel('A')
+        assert all(a.getpixel(pt)==0 for pt in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)])
+        bbox=a.getbbox()
+        margins=[bbox[0],bbox[1],w-bbox[2],h-bbox[3]]
+        assert min(margins)>0, (e['id'],margins)
+        e['notes']=f'Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at {original.as_posix()}. Pillow verified: {w}x{h} RGBA; four fully transparent corners; alpha bbox {bbox}; margins left/top/right/bottom {margins} px.'
+        print(e['id'],'PASS',f'{w}x{h}',margins)
+manifest.write_text(json.dumps(entries,indent=2)+'\\n',encoding='utf-8')
+print('PASS: all 12 final PNGs; 12 originals preserved; manifest includes prompts and verification.')
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ exited 1 in 534ms:
+Traceback (most recent call last):
+  File "<stdin>", line 12, in <module>
+RuntimeError: Original already exists: assets-src\food\originals\taco-chicken.png
+
+exec
+"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import json, shutil
+from pathlib import Path
+from PIL import Image
+manifest=Path('assets-src/food/manifest-b.json')
+entries=json.loads(manifest.read_text(encoding='utf-8'))
+originals=Path('assets-src/food/originals')
+originals.mkdir(exist_ok=True)
+for e in entries:
+    p=Path(e['file'])
+    original=originals/(p.stem+'-batch-b-generated.png')
+    assert not original.exists(),str(original)
+    shutil.copy2(p,original)
+    with Image.open(p) as im:
+        im.load()
+        im.putalpha(im.getchannel('A').point(lambda x: 0 if x<=10 else x))
+        im.save(p)
+    with Image.open(p) as im:
+        w,h=im.size
+        assert im.mode=='RGBA' and w==h
+        a=im.getchannel('A')
+        assert all(a.getpixel(pt)==0 for pt in [(0,0),(w-1,0),(0,h-1),(w-1,h-1)])
+        bbox=a.getbbox()
+        margins=[bbox[0],bbox[1],w-bbox[2],h-bbox[3]]
+        assert min(margins)>0, (e['id'],margins)
+        e['notes']=f'Generated with built-in image_gen; visually reviewed. Removed near-invisible background alpha noise (alpha <= 10/255 set to zero); original retained at {original.as_posix()}. Pillow verified: {w}x{h} RGBA; four fully transparent corners; alpha bbox {bbox}; margins left/top/right/bottom {margins} px.'
+        print(e['id'],'PASS',f'{w}x{h}',margins)
+manifest.write_text(json.dumps(entries,indent=2)+'\\n',encoding='utf-8')
+print('PASS: all 12 final PNGs; 12 originals preserved; manifest includes prompts and verification.')
+'@ | & 'C:\\Users\\Theo\\AppData\\Local\\Programs\\Python\\Python314\\python.exe' -" in C:\Users\Theo\Desktop\Projects\sered
+ succeeded in 3016ms:
+taco-chicken PASS 1254x1254 [174, 139, 210, 124]
+taco-steak PASS 1254x1254 [172, 137, 210, 122]
+taco-shrimp PASS 1254x1254 [172, 137, 209, 123]
+taco-lamb-chop PASS 1254x1254 [171, 137, 209, 122]
+taco-lobster-tail PASS 1254x1254 [173, 136, 209, 124]
+protein-steak PASS 1254x1254 [61, 240, 60, 150]
+protein-chicken PASS 1254x1254 [67, 111, 69, 98]
+protein-shrimp PASS 1254x1254 [151, 210, 155, 235]
+protein-salmon PASS 1254x1254 [77, 295, 74, 263]
+protein-lamb-chop PASS 1254x1254 [94, 157, 94, 158]
+protein-filet-mignon PASS 1254x1254 [128, 173, 92, 181]
+protein-lobster-tail PASS 1254x1254 [105, 232, 113, 194]
+PASS: all 12 final PNGs; 12 originals preserved; manifest includes prompts and verification.
+
+codex
+Created all 12 assets using built-in image generation. All passed Pillow checks: RGBA, transparent corners, and clear margins. No code edited.
+
+Files in `assets-src/food/`:
+
+- `taco-chicken.png`
+- `taco-steak.png`
+- `taco-shrimp.png`
+- `taco-lamb-chop.png`
+- `taco-lobster-tail.png`
+- `protein-steak.png`
+- `protein-chicken.png`
+- `protein-shrimp.png`
+- `protein-salmon.png`
+- `protein-lamb-chop.png`
+- `protein-filet-mignon.png`
+- `protein-lobster-tail.png`
+- [manifest-b.json](/C:/Users/Theo/Desktop/Projects/sered/assets-src/food/manifest-b.json) — prompts and validation notes.
+
+Each image’s original is preserved as `originals/<id>-batch-b-generated.png`.
+
+Assets I could not get right: none.
+tokens used
+67,493
+Created all 12 assets using built-in image generation. All passed Pillow checks: RGBA, transparent corners, and clear margins. No code edited.
+
+Files in `assets-src/food/`:
+
+- `taco-chicken.png`
+- `taco-steak.png`
+- `taco-shrimp.png`
+- `taco-lamb-chop.png`
+- `taco-lobster-tail.png`
+- `protein-steak.png`
+- `protein-chicken.png`
+- `protein-shrimp.png`
+- `protein-salmon.png`
+- `protein-lamb-chop.png`
+- `protein-filet-mignon.png`
+- `protein-lobster-tail.png`
+- [manifest-b.json](/C:/Users/Theo/Desktop/Projects/sered/assets-src/food/manifest-b.json) — prompts and validation notes.
+
+Each image’s original is preserved as `originals/<id>-batch-b-generated.png`.
+
+Assets I could not get right: none.
